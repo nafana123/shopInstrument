@@ -1,0 +1,116 @@
+body, html{
+    margin: 0;
+    padding: 0;
+}
+.maincontainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.container{
+    display: flex;
+    justify-content: center;
+    background-color: rgb(40, 40, 40);
+    height: 250px;
+    width: 37%;
+    margin-top: 2%;
+    color: #f1f1f1;
+    box-shadow: 0 0 10px black;
+}
+form{
+    margin-top: 15px;
+}
+.cont{
+    display: flex;
+    justify-content: center;
+    background-color: whitesmoke;
+    height: 350px;
+    width: 37%;
+    box-shadow: 0 0 20px black;
+}
+.main{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: white;
+    height: 500px;
+    width: 24%;
+    margin-top: -31%;
+    box-shadow: 0 0 10px black;
+}
+input {
+    border: none;
+    border-bottom: 2px solid black;
+    color: black;
+    margin: 20px;
+    padding: 5px;
+    width: 87%;
+    font-size: 18px;
+}
+
+
+
+button{
+    display: block;
+    width: 250px;
+    height: 45px;
+    line-height: 40px;
+    font-size: 22px;
+    font-family: sans-serif;
+    text-decoration: none;
+    color: #000000;
+    background-color: white;
+    border: 2px solid #333;
+    letter-spacing: 2px;
+    text-align: center;
+    position: relative;
+    transition: all .40s;
+    margin-top: 8%;
+    margin-left: 19%;
+}
+
+button span{
+    position: relative;
+    z-index: 2;
+}
+
+button:after{
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgb(40, 40, 40);
+    transition: all .40s;
+}
+
+button:hover{
+    color: #fff;
+}
+
+button:hover:after{
+    width: 100%;
+}
+button span{
+    font-size: 18px;
+}
+.vhod1 p{
+    text-align: center;
+    margin-top: 30px;
+}
+img.close{
+    width: 25px;
+    margin-left: 350px;
+    margin-top: -20px;
+}
+.error{
+    margin-left: 45px;
+}
+.errors{
+    margin-left: 78px;
+}
+.errorse{
+    margin-left: 100px;
+}

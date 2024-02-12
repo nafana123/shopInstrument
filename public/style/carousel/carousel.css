@@ -1,0 +1,19 @@
+.carousel-item img {
+    display: block;
+    margin: 0 auto;
+    width: 80%;
+    height: 500px;
+}
+button.carousel-control-prev{
+    margin-left: 120px;
+    margin-top: 153px;
+    height: 450px;
+
+}
+button.carousel-control-next{
+    margin-right: 120px;
+    margin-top: 153px;
+    height: 450px;
+}
+
+

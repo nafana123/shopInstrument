@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ asset('style/map/map.css') }}">
+</head>
+<body>
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '->';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('mainpage') }}" style="text-decoration: none; color: black">Главная</a></li>
+            <li class="breadcrumb-item active" aria-current="page">О компании</li>
+        </ol>
+    </nav>
+    <h2 class="zag" id="popular">Мы на карте</h2>
+    <div class="row justify-content-center">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2827.9690333759527!2d58.976986331117644!3d53.41430710269115!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x43d12f3bca277085%3A0x40d07ea619d9b559!2z0JzQuNGAINC40L3RgdGC0YDRg9C80LXQvdGC0LA!5e0!3m2!1sru!2sru!4v1694938305828!5m2!1sru!2sru"
+                width="600" height="450" style="border:0;"
+                allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+</div>
+</body>
+</html>
