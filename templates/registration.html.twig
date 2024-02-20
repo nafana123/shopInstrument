@@ -31,15 +31,12 @@
             </div>
             <div class="main">
                 <a href="../index.html"><img  class="close" src="../icons/CL.png"></a>
-                <form action="" method="post">
+                <form action="{{ path('registration') }}" method="post">
+                    <input type="text" name="login" placeholder="Логин" required/>
                     <input type="email" name="email" placeholder="Почта" required/>
                     <input type="password" name="password" placeholder="Пароль" required/>
 
                     <button type="submit"><span>Войти</span></button>
-                    <div class="vhod1">
-                        <p class="vxod">У вас нет аккаунта? <a class="vx" href="./../php/form.php">Зарегистрироваться</a></p>
-
-                    </div>
                 </form>
             </div>
         </div>
