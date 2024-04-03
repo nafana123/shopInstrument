@@ -55,8 +55,10 @@
 </svg>
 
 <div class="wrapper">
+    <a class="nav-link active" href="{{ path('mainpage') }}">На главную страницу</a>
     <div class="header">
         <h3 class="sign-in">Регистрация</h3>
+
         <div class="button">
             <a class="nav-link active" href="{{ path('vhod') }}">Войти</a>
         </div>
@@ -93,10 +95,12 @@
                 <input type="password" name="password" id="password" required placeholder="Пароль" />
             </div>
             <div>
+                {% if error is defined %}
+                    <span class="forgot-label-error">{{ error }}</span>
+                {% endif %}
+
                 <input type="submit" value="Зарегистрироваться" />
             </div>
-            <span class="forgot-label">Забыли свой пароль?</span>
-            <div class="clear"></div>
         </div>
     </form>
 </div>

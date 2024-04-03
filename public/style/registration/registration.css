@@ -178,4 +178,9 @@ label{
 a:hover{
     color: white;
 }
+.forgot-label-error{
+    color: whitesmoke;
+    display: flex;
+    justify-content: center;
+}
 

@@ -12,37 +12,51 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     private EntityManagerInterface $em;
+
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-
     }
+
     /**
-     * @Route("/registration", name="registration", methods={"GET","POST"})
+     * @Route("/registration", name="registration", methods={"GET", "POST"})
      */
     public function registration(Request $request): Response
     {
-        $login = $request->request->get('login');
-        $email = $request->request->get('email');
-        $password = $request->request->get('password');
+        if ($request->isMethod('POST')) {
+            $login = $request->request->get('login');
+            $email = $request->request->get('email');
+            $password = $request->request->get('password');
 
-        if ($login !== null && $email !== null && $password !== null) {
-            $user = new Users();
-            $user->setLogin($login);
-            $user->setEmail($email);
-            $user->setPassword($password);
+            $existingUser = $this->em->getRepository(Users::class)->findOneBy(['email' => $email]);
+            if ($existingUser !== null) {
+                return $this->render('registration.html.twig', [
+                    'error' => 'Данная почта уже зарегистрирована',
+                ]);
+            }
 
-            $this->em->persist($user);
-            $this->em->flush();
+            if ($login !== null && $email !== null && $password !== null) {
+                $user = new Users();
+                $user->setLogin($login);
+                $user->setEmail($email);
+                $user->setPassword($password);
 
-            return $this->render('base.html.twig');
+                $this->em->persist($user);
+                $this->em->flush();
 
-
-        } else {
-
-            return $this->render('registration.html.twig');
+                // Передача логина пользователя в шаблон
+                return $this->redirectToRoute('registration_success', ['login' => $login]);
+            }
         }
 
+        return $this->render('registration.html.twig');
     }
 
+    /**
+     * @Route("/registration/success/{login}", name="registration_success")
+     */
+    public function registrationSuccess(string $login): Response
+    {
+        return $this->render('base.html.twig', ['login' => $login]);
+    }
 }
