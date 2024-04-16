@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Users;
+use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,9 +14,13 @@ class RegistrationController extends AbstractController
 {
     private EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $em)
+    private CookieService $cookieService;
+
+    public function __construct(EntityManagerInterface $em, CookieService $cookieService)
     {
         $this->em = $em;
+        $this->cookieService = $cookieService;
+
     }
 
     /**
@@ -45,7 +50,9 @@ class RegistrationController extends AbstractController
                 $this->em->flush();
 
                 // Передача логина пользователя в шаблон
-                return $this->redirectToRoute('registration_success', ['login' => $login]);
+                $response = $this->redirectToRoute('registration_success', ['login' => $login]);
+                $response = $this->cookieService->setUserCookie($response, 'user_login', $login);
+                return $response;
             }
         }
 

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Users;
+use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,9 +14,12 @@ class vhodController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    private CookieService $cookieService;
+
+    public function __construct(EntityManagerInterface $entityManager, CookieService $cookieService)
     {
         $this->entityManager = $entityManager;
+        $this->cookieService = $cookieService;
     }
 
     /**
@@ -33,7 +37,9 @@ class vhodController extends AbstractController
 
             if ($user !== null) {
                 $login = $user->getLogin();
-                return $this->redirectToRoute('registration_success', ['login' => $login]);
+                $response = $this->redirectToRoute('registration_success', ['login' => $login]);
+                $response = $this->cookieService->setUserCookie($response, 'user_login', $login);
+                return $response;
             } else {
                 return $this->render('vhod.html.twig', [
                     'error' => 'Неверная почта или пароль'

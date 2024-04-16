@@ -20,7 +20,7 @@
                 <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
             </form>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
-                {% if login is defined %}
+                {% if login is not empty %}
                     <div class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{ login }}
@@ -33,6 +33,7 @@
                 {% else %}
                     <a class="nav-link active" href="{{ path('vhod') }}">Профиль</a>
                 {% endif %}
+
                 <li class="nav-item col-10">
                     <a class="nav-link active"  href="#">Корзина
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
