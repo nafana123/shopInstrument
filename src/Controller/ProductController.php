@@ -2,33 +2,32 @@
 
 namespace App\Controller;
 
-use App\Entity\Type;
+use App\Entity\Product;
 use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MainController extends AbstractController
+class ProductController extends AbstractController
 {
-
     /**
-     * @Route("/", name="mainpage")
+     * @Route("/{name}/{typeId}", name="product")
      */
-    public function mainpage(Request $request, CookieService $cookieService, EntityManagerInterface $entityManager)
+    public function mainpage($typeId, Request $request, CookieService $cookieService, EntityManagerInterface $entityManager)
     {
         $login = $this->getUserLogin($request, $cookieService);
-        $types = $entityManager->getRepository(type::class)->findAll();
 
+        $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
 
-        return $this->render('base.html.twig', [
+        return $this->render('katalog/product.html.twig', [
             'login' => $login,
-            'types' => $types
+            'products' => $products
         ]);
     }
+
     private function getUserLogin(Request $request, CookieService $cookieService)
     {
         return $cookieService->getUserFromCookie($request, 'user_login');
     }
-
 }

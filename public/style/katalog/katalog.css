@@ -12,4 +12,12 @@ h5.card-title{
 h1.zag{
     margin-bottom: 30px;
 }
+.dropdown-item:hover {
+}
+.card {
+    transition: transform 0.3s ease; /* Плавное изменение размера в течение 0.3 секунды с эффектом ease */
+}
 
+.card:hover {
+    transform: scale(1.15); /* Увеличение карточки при наведении на нее курсора */
+}
