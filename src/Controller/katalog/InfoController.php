@@ -3,6 +3,7 @@
 namespace App\Controller\katalog;
 
 use App\Entity\Images;
+use App\Entity\InfoProduct;
 use App\Entity\Product;
 use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,25 +14,36 @@ use Symfony\Component\Routing\Annotation\Route;
 class InfoController extends AbstractController
 {
     /**
-     * @Route("/{typeId}/{name}/{id}", name="info_product")
-     */
-    public function mainpage($typeId, Request $request, CookieService $cookieService, EntityManagerInterface $entityManager)
+ * @Route("/{typeId}/{name}/{id}", name="info_product")
+ */
+    public function mainpage($typeId, $id, Request $request, CookieService $cookieService, EntityManagerInterface $entityManager)
     {
         $login = $this->getUserLogin($request, $cookieService);
 
-        $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
+        $product = $entityManager->getRepository(Product::class)->findOneBy(['types' => $typeId, 'id' => $id]);
 
-        $productImages = [];
-        foreach ($products as $product) {
-            $productId = $product->getId();
-            $images = $entityManager->getRepository(Images::class)->findBy(['id_product' => $productId]);
-            $productImages[$productId] = $images;
+        if (!$product) {
+            throw $this->createNotFoundException('Товар не найден');
+        }
+
+        $images = $entityManager->getRepository(Images::class)->findBy(['id_product' => $id]);
+        $infoProduct = $entityManager->getRepository(InfoProduct::class)->findOneBy(['id_product' => $id]);
+
+        $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
+        $similarProducts = [];
+
+        foreach ($products as $similarProduct) {
+            if ($similarProduct->getId() != $id) {
+                $similarProducts[] = $similarProduct;
+            }
         }
 
         return $this->render('katalog/infoProduct.html.twig', [
             'login' => $login,
-            'products' => $products,
-            'productImages' => $productImages
+            'product' => $product,
+            'images' => $images,
+            'infoProduct' => $infoProduct,
+            'products' => $similarProducts
         ]);
     }
 

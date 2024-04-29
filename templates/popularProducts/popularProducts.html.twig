@@ -11,46 +11,18 @@
 <div class="container">
     <h1 class="zag" id="popular">Популярные товары</h1>
     <div class="row justify-content-center">
-        <article class="col-sm-6 col-md-4 col-lg-3">
-            <div class="cards">
-                <img src="{{ asset('picture/katalog/betonoomeshalka.jpeg') }}"  class="img-fluid" alt="...">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Бетономешалка 140</h5>
-                    <p class="card-text">Цена: 11000 ₽</p>
-                    <button type="button" class="btn btn-success">Добавить в корзину</button>
+        {% for infoProducts in infoProduct %}
+            <article class="col-sm-6 col-md-4 col-lg-3">
+                <div class="cards">
+                    <img src="{{ asset('picture/product/' ~ infoProducts.img) }}" class="img-fluid" alt="{{ infoProducts.name }}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ infoProducts.name }}</h5>
+                        <p class="card-text">Цена: {{ infoProducts.price }} ₽</p>
+                        <button type="button" class="btn btn-success">Добавить в корзину</button>
+                    </div>
                 </div>
-            </div>
-        </article>
-        <article class="col-sm-6 col-md-4 col-lg-3">
-            <div class="cards">
-                <img src="{{ asset('picture/katalog/stihl.jpeg') }}"  class="img-fluid" alt="...">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Бензопила Shtill</h5>
-                    <p class="card-text">Цена: 27500 ₽</p>
-                    <button type="button" class="btn btn-success">Добавить в корзину</button>
-                </div>
-            </div>
-        </article>
-        <article class="col-sm-6 col-md-4 col-lg-3">
-            <div class="cards">
-                <img src="{{ asset('picture/katalog/trimer.jpeg') }}" class="img-fluid" alt="...">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Бензотриммер</h5>
-                    <p class="card-text">Цена: 10500 ₽</p>
-                    <button type="button" class="btn btn-success">Добавить в корзину</button>
-                </div>
-            </div>
-        </article>
-        <article class="col-sm-6 col-md-4 col-lg-3">
-            <div class="cards">
-                <img src="{{ asset('picture/katalog/z.jpeg') }}" class="img-fluid" alt="...">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Мотоблок LIFAN </h5>
-                    <p class="card-text">Цена: 45500 ₽</p>
-                    <button type="button" class="btn btn-success">Добавить в корзину</button>
-                </div>
-            </div>
-        </article>
+            </article>
+        {% endfor %}
     </div>
 </div>
 
