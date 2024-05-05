@@ -50,7 +50,7 @@ class vhodController extends AbstractController
 
     }
     /**
-     * @Route("/registration/success/{login}", name="registration_success")
+     * @Route("/", name="registration_success")
      */
     public function registrationSuccess(string $login): Response
     {

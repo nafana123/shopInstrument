@@ -22,10 +22,6 @@ class InfoController extends AbstractController
 
         $product = $entityManager->getRepository(Product::class)->findOneBy(['types' => $typeId, 'id' => $id]);
 
-        if (!$product) {
-            throw $this->createNotFoundException('Товар не найден');
-        }
-
         $images = $entityManager->getRepository(Images::class)->findBy(['id_product' => $id]);
         $infoProduct = $entityManager->getRepository(InfoProduct::class)->findOneBy(['id_product' => $id]);
 

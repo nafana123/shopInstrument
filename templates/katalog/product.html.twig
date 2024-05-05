@@ -37,15 +37,60 @@
                         <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__title">
                             {{ product.name }}
                         </a>
-                        <button type="button" class="btn btn-outline-success">В корзине</button>
+                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-product-id="{{ product.id }}" onclick="updateCartItemCount()">В корзину</button>
                     </div>
                 </div>
             </article>
         {% endfor %}
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+
+        addToCartButtons.forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                var productId = button.dataset.productId;
+                var quantity = 1;
+                var cartItem = productId + ':' + quantity;
+                var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
+                var updatedCart = '';
+
+                if (existingCartItems) {
+                    var items = existingCartItems.split(',');
+                    var found = false;
+
+                    for (var i = 0; i < items.length; i++) {
+                        var parts = items[i].split(':');
+                        if (parts[0] === productId) {
+                            parts[1] = parseInt(parts[1]) + quantity;
+                            found = true;
+                        }
+                        updatedCart += (i > 0 ? ',' : '') + parts.join(':');
+                    }
+
+                    if (!found) {
+                        updatedCart += ',' + cartItem;
+                    }
+                } else {
+                    updatedCart = cartItem;
+                }
+
+                document.cookie = 'cart=' + updatedCart + '; path=/';
+                updateCartItemCount();
+            });
+        });
+    });
+
+    updateCartItemCount();
+</script>
+
 
 </body>
 </html>
+
+
 
 {% include 'footer/footer.html.twig' %}
