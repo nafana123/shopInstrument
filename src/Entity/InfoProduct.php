@@ -22,7 +22,7 @@ class InfoProduct
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $price = null;
+    private ?int $price = null;
 
     #[ORM\Column(length: 1255)]
     private ?string $description = null;
@@ -114,12 +114,12 @@ class InfoProduct
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): ?int
     {
         return $this->price;
     }
 
-    public function setPrice(string $price): static
+    public function setPrice(int $price): static
     {
         $this->price = $price;
 
