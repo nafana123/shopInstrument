@@ -45,8 +45,7 @@
                                         <button class="btn btn-sm" onclick="changeQuantity('{{ cartItem.id }}', 1)" style="opacity: 1; font-size: 20px">+</button>
 
                                     </td>
-                                    <td id="total_{{ cartItem.id }}" data-price="{{ cartItem.price }}">{{ cartItem.price }} руб.</td>
-
+                                    <td id="total_{{ cartItem.id }}" data-price="{{ cartItem.price }}">{{ cartItem.price * cartItem.quantity }} руб.</td>
                                     <td>
                                         <button class="btn  delete-cart-item" style="color: red" data-product-id="{{ cartItem.id }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -105,6 +104,7 @@
             updateCookie(productId, quantity);
 
             updateTotalPrice();
+            updateTotalPriceFromCart();
         }
 
         function updateCookie(productId, quantity) {
@@ -154,6 +154,7 @@
             }
             updateTotalPrice();
             location.reload();
+            updateTotalPriceFromCart();
         }
 
 
@@ -173,6 +174,25 @@
 
             totalPriceElement.textContent = totalPrice.toFixed() + ' руб.';
         }
+        function updateTotalPriceFromCart() {
+            var totalPriceElement = document.getElementById('totalPrice');
+            var totalPrice = 0;
+
+            var tableRows = document.querySelectorAll('.table tbody tr');
+
+            tableRows.forEach(function(row) {
+                var priceTd = row.querySelector('td:nth-child(3)');
+                var quantitySpan = row.querySelector('td:nth-child(4) span');
+
+                var price = parseFloat(priceTd.textContent);
+                var quantity = parseInt(quantitySpan.textContent);
+
+                totalPrice += price * quantity;
+            });
+
+            totalPriceElement.textContent = totalPrice.toFixed() + ' руб.';
+        }
+
 
         function loadFromLocalStorage() {
             var cart = JSON.parse(localStorage.getItem('cart')) || {};
@@ -187,6 +207,7 @@
         }
 
         updateTotalPrice();
+        updateTotalPriceFromCart();
 
     </script>
 {% endblock %}
