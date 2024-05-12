@@ -1,67 +1,64 @@
 {% include 'header/header.html.twig' %}
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../public/style/header/header.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}onlineshop{% endblock %}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-    {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('style/basket/basket.css') }}">
-
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    {% endblock %}
+    <link rel="stylesheet" href="{{ asset('style/basket/basket.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        td {
+            font-size: 17px;
+        }
+    </style>
 </head>
 <body>
-
-<div class="container-fluid">
+<div class="container-fluid" style="margin-left: 160px">
     <div class="row">
-        <div class="col-md-9">
-            {% block body %}
-                <h1>Корзина</h1>
-                {% if cartItems is not empty %}
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
+        <div class="col-md-7">
+            <h2>Корзина</h2>
+            {% if cartItems is not empty %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Изображение</th>
+                            <th>Название</th>
+                            <th>Цена за единицу</th>
+                            <th>Количество</th>
+                            <th>Итог</th>
+                            <th>Действия</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for cartItem in cartItems %}
                             <tr>
-                                <th>Изображение</th>
-                                <th>Название</th>
-                                <th>Цена за единицу</th>
-                                <th>Количество</th>
-                                <th>Итог</th>
-                                <th>Действия</th>
+                                <td><img src="{{ asset('picture/product/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" style="max-width: 100px;"></td>
+                                <td>{{ cartItem.name }}</td>
+                                <td>{{ cartItem.price }} руб.</td>
+                                <td>
+                                    <button class="btn btn-sm" onclick="changeQuantity('{{ cartItem.id }}', -1)" style="opacity: 1;font-size: 20px">-</button>
+                                    <span id="quantity_{{ cartItem.id }}">{{ cartItem.quantity }}</span>
+                                    <button class="btn btn-sm" onclick="changeQuantity('{{ cartItem.id }}', 1)" style="opacity: 1; font-size: 20px">+</button>
+                                </td>
+                                <td id="total_{{ cartItem.id }}" data-price="{{ cartItem.price }}">{{ cartItem.price * cartItem.quantity }} руб.</td>
+                                <td>
+                                    <button class="btn delete-cart-item" style="color: red" data-product-id="{{ cartItem.id }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                                        </svg>
+                                    </button>
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for cartItem in cartItems %}
-                                <tr>
-                                    <td><img src="{{ asset('picture/product/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" style="max-width: 100px;"></td>
-                                    <td>{{ cartItem.name }}</td>
-                                    <td>{{ cartItem.price }} руб.</td>
-                                    <td>
-                                        <button class="btn btn-sm" onclick="changeQuantity('{{ cartItem.id }}', -1)" style="opacity: 1;font-size: 20px">-</button>
-                                        <span id="quantity_{{ cartItem.id }}">{{ cartItem.quantity }}</span>
-                                        <button class="btn btn-sm" onclick="changeQuantity('{{ cartItem.id }}', 1)" style="opacity: 1; font-size: 20px">+</button>
-
-                                    </td>
-                                    <td id="total_{{ cartItem.id }}" data-price="{{ cartItem.price }}">{{ cartItem.price * cartItem.quantity }} руб.</td>
-                                    <td>
-                                        <button class="btn  delete-cart-item" style="color: red" data-product-id="{{ cartItem.id }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                                                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <p>Ваша корзина пуста.</p>
-                {% endif %}
-            {% endblock %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>Ваша корзина пуста.</p>
+            {% endif %}
         </div>
         {% if cartItems is not empty %}
             <div class="col-md-3">
@@ -70,7 +67,7 @@
                     <div class="card-body">
                         <p class="card-text" style="display: flex; justify-content: space-between;">
                             <span>Итого</span>
-                            <span id="totalPrice"style="font-size: 23px" >0P</span>
+                            <span id="totalPrice" style="font-size: 23px">0 руб.</span>
                         </p>
                     </div>
                     <a class="navbar-brand col-2" href="{{ path('infopage') }}">
@@ -78,139 +75,156 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
                                 <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
                             </svg>
-                            Бесплатная доставка в магазин мир инструмента
+                            Пункт выдачи: Магазин мир инструмента
                         </p>
                     </a>
                 </div>
-                <button type="button" class="btn btn-success mt-2" style="width: 100%; height: 50px;">Оформить заказ</button>
+                <a href="#" class="btn btn-success mt-2" style="width: 100%; height: 50px;" onclick="openModal()">Оформить заказ</a>
             </div>
-
         {% endif %}
     </div>
 </div>
 
-{% block javascripts %}
-    <script>
-        function changeQuantity(productId, delta) {
-            var quantitySpan = document.getElementById('quantity_' + productId);
-            var totalTd = document.getElementById('total_' + productId);
-            var quantity = parseInt(quantitySpan.textContent);
-            quantity += delta;
-            if (quantity < 1) return;
-            quantitySpan.textContent = quantity;
-            var price = parseFloat(totalTd.dataset.price);
-            totalTd.textContent = (price * quantity).toFixed() + ' руб.';
-            totalTd.dataset.total = (price * quantity).toFixed();
-            updateCookie(productId, quantity);
 
-            updateTotalPrice();
-            updateTotalPriceFromCart();
-        }
 
-        function updateCookie(productId, quantity) {
-            var cart = JSON.parse(localStorage.getItem('cart')) || {};
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: -80px">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Подтверждение заказа</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <p class="text-end fw-bold">{{ "Дата заказа: " ~ "now"|date('d.m.Y') }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Изображение</th>
+                                    <th>Название</th>
+                                    <th>Цена</th>
+                                    <th>Количество</th>
+                                    <th>Сумма</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for cartItem in cartItems %}
+                                    <tr>
+                                        <td><img src="{{ asset('picture/product/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" style="max-width: 100px;"></td>
+                                        <td>{{ cartItem.name }}</td>
+                                        <td>{{ cartItem.price }} руб.</td>
+                                        <td>{{ cartItem.quantity }}</td>
+                                        <td>{{ cartItem.price * cartItem.quantity }} руб.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col">
+                            <p class="fw-bold text-end" style="font-size: 20px">Итого: <span id="modalTotalPrice">0 руб.</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center;">
+                <a href="{{ path('check') }}" class="btn btn-success" style="width: 430px; height: 50px">Подтвердить заказ</a>
+            </div>
 
-            if (quantity > 0) {
-                cart[productId] = quantity;
-            } else {
-                delete cart[productId];
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function openModal() {
+        $('#exampleModal').modal('show');
+    }
+
+    function updateModalTotalPrice() {
+        var totalPrice = 0;
+        $('.table tbody tr').each(function() {
+            var totalTd = $(this).find('td:nth-child(5)');
+            var total = parseFloat(totalTd.text().replace(' руб.', ''));
+            if (!isNaN(total)) {
+                totalPrice += total;
             }
-
-            localStorage.setItem('cart', JSON.stringify(cart));
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteButtons = document.querySelectorAll('.delete-cart-item');
-
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const productId = button.dataset.productId;
-                    removeFromCart(productId);
-                });
-            });
-
-            loadFromLocalStorage();
         });
+        $('#modalTotalPrice').text(totalPrice.toFixed() + ' руб.');
+    }
 
-        function removeFromCart(productId) {
-            var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-            var cartItems = cookieValue.split(',');
+    $(document).ready(function() {
+        $('#exampleModal').on('show.bs.modal', function() {
+            updateModalTotalPrice();
+        });
+    });
 
-            var index = cartItems.findIndex(item => item.split(':')[0] === productId);
-
-            if (index !== -1) {
-                cartItems.splice(index, 1);
-            }
-
-            document.cookie = 'cart=' + cartItems.join(',') + '; path=/';
-
-            var cart = JSON.parse(localStorage.getItem('cart')) || {};
-            delete cart[productId];
-            localStorage.setItem('cart', JSON.stringify(cart));
-
-            var tableRow = document.querySelector('tr[data-product-id="' + productId + '"]');
-            if (tableRow) {
-                tableRow.remove();
-            }
-            updateTotalPrice();
-            location.reload();
-            updateTotalPriceFromCart();
-        }
-
-
-        function updateTotalPrice() {
-            var totalPriceElement = document.getElementById('totalPrice');
-            var totalPrice = 0;
-
-            var tableRows = document.querySelectorAll('.table tbody tr');
-
-            tableRows.forEach(function(row) {
-                var totalTd = row.querySelector('td:nth-child(5)');
-                var total = parseFloat(totalTd.dataset.total);
-                if (!isNaN(total)) {
-                    totalPrice += total;
-                }
-            });
-
-            totalPriceElement.textContent = totalPrice.toFixed() + ' руб.';
-        }
-        function updateTotalPriceFromCart() {
-            var totalPriceElement = document.getElementById('totalPrice');
-            var totalPrice = 0;
-
-            var tableRows = document.querySelectorAll('.table tbody tr');
-
-            tableRows.forEach(function(row) {
-                var priceTd = row.querySelector('td:nth-child(3)');
-                var quantitySpan = row.querySelector('td:nth-child(4) span');
-
-                var price = parseFloat(priceTd.textContent);
-                var quantity = parseInt(quantitySpan.textContent);
-
-                totalPrice += price * quantity;
-            });
-
-            totalPriceElement.textContent = totalPrice.toFixed() + ' руб.';
-        }
-
-
-        function loadFromLocalStorage() {
-            var cart = JSON.parse(localStorage.getItem('cart')) || {};
-            for (var productId in cart) {
-                var quantity = cart[productId];
-                var quantitySpan = document.getElementById('quantity_' + productId);
-                if (quantitySpan) {
-                    quantitySpan.textContent = quantity;
-                }
-                changeQuantity(productId, 0);
-            }
-        }
-
+    function changeQuantity(productId, delta) {
+        var quantitySpan = $('#quantity_' + productId);
+        var totalTd = $('#total_' + productId);
+        var quantity = parseInt(quantitySpan.text());
+        quantity += delta;
+        if (quantity < 1) return;
+        quantitySpan.text(quantity);
+        var price = parseFloat(totalTd.data('price'));
+        totalTd.text((price * quantity).toFixed() + ' руб.');
         updateTotalPrice();
-        updateTotalPriceFromCart();
+    }
 
-    </script>
-{% endblock %}
+    function updateTotalPrice() {
+        var totalPriceElement = $('#totalPrice');
+        var totalPrice = 0;
+        $('.table tbody tr').each(function() {
+            var totalTd = $(this).find('td:nth-child(5)');
+            var total = parseFloat(totalTd.text().replace(' руб.', ''));
+            if (!isNaN(total)) {
+                totalPrice += total;
+            }
+        });
+        totalPriceElement.text(totalPrice.toFixed() + ' руб.');
+    }
 
+    $(document).ready(function() {
+        $('.delete-cart-item').click(function() {
+            var productId = $(this).data('product-id');
+            removeFromCart(productId);
+        });
+        loadFromLocalStorage();
+    });
+
+    function removeFromCart(productId) {
+        var cart = JSON.parse(localStorage.getItem('cart')) || {};
+        delete cart[productId];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        var tableRow = $('tr[data-product-id="' + productId + '"]');
+        if (tableRow.length > 0) {
+            tableRow.remove();
+        }
+        updateTotalPrice();
+    }
+
+    function loadFromLocalStorage() {
+        var cart = JSON.parse(localStorage.getItem('cart')) || {};
+        for (var productId in cart) {
+            var quantity = cart[productId];
+            var quantitySpan = $('#quantity_' + productId);
+            if (quantitySpan.length > 0) {
+                quantitySpan.text(quantity);
+            }
+            changeQuantity(productId, 0);
+        }
+    }
+
+    updateTotalPrice();
+</script>
 </body>
 </html>

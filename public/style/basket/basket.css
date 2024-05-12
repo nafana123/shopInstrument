@@ -17,3 +17,9 @@ p.itog{
     text-decoration: underline;
     cursor: pointer;
 }
+td{
+    font-size: 18px;
+}
+tr{
+    font-size: 17px;
+}
