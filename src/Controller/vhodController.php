@@ -36,6 +36,12 @@ class vhodController extends AbstractController
             $user = $userRepository->findOneBy(['email' => $email, 'password' => $password]);
 
             if ($user !== null) {
+                if($user->getLogin() === 'admin' && $user->getPassword() === $password){
+                    $login = $user->getLogin();
+                    $response = $this->redirectToRoute('admin', ['login' => $login]);
+                    return $response;
+
+                }
                 $login = $user->getLogin();
                 $response = $this->redirectToRoute('registration_success', ['login' => $login]);
                 $response = $this->cookieService->setUserCookie($response, 'user_login', $login);

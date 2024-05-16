@@ -49,6 +49,11 @@ class Checks
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $itogPrice = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $data = null;
 
     public function getId(): ?int
     {
@@ -155,5 +160,25 @@ class Checks
     public function setStatus(?string $status): void
     {
         $this->status = $status;
+    }
+
+    public function getItogPrice(): ?string
+    {
+        return $this->itogPrice;
+    }
+
+    public function setItogPrice(?string $itogPrice): void
+    {
+        $this->itogPrice = $itogPrice;
+    }
+    public function getData(): ?string
+    {
+        return $this->data;
+    }
+
+    public function setData(?string $data): self
+    {
+        $this->data = $data;
+        return $this;
     }
 }

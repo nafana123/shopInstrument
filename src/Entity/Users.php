@@ -22,6 +22,9 @@ class Users
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $data = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,17 @@ class Users
     {
         $this->password = $password;
 
+        return $this;
+    }
+
+    public function getData(): ?string
+    {
+        return $this->data;
+    }
+
+    public function setData(?string $data): self
+    {
+        $this->data = $data;
         return $this;
     }
 }

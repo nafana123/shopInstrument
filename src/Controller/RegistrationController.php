@@ -45,11 +45,12 @@ class RegistrationController extends AbstractController
                 $user->setLogin($login);
                 $user->setEmail($email);
                 $user->setPassword($password);
+                $registrationDate = new \DateTime();
+                $user->setData($registrationDate->format('d-m-Y'));
 
                 $this->em->persist($user);
                 $this->em->flush();
 
-                // Передача логина пользователя в шаблон
                 $response = $this->redirectToRoute('registration_success', ['login' => $login]);
                 $response = $this->cookieService->setUserCookie($response, 'user_login', $login);
                 return $response;

@@ -61,8 +61,13 @@ class CheckPageController extends AbstractController
                     $check->setImg($product->getImg());
                     $check->setDateCreated($dateTimeNow);
                     $check->setStatus(Checks::STATUS_PROCESSING);
+                    $registrationDate = new \DateTime();
+                    $check->setData($registrationDate->format('d-m-Y'));
+
 
                     $totalPrice += $product->getPrice() * $quantity;
+                    $check->setItogPrice($totalPrice);
+
 
                     $this->entityManager->persist($check);
                 }
@@ -76,6 +81,7 @@ class CheckPageController extends AbstractController
 
         $response = $this->render('checkPage.html.twig', [
             'login' => $login,
+            'user' => $user,
             'checks' => $checks,
             'totalPrice' => $totalPrice,
         ]);
@@ -84,6 +90,7 @@ class CheckPageController extends AbstractController
 
         return $response;
     }
+
 
     private function getUserLogin(Request $request)
     {
