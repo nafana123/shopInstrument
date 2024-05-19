@@ -1,3 +1,6 @@
+parameters:
+    katalog_directory: '%kernel.project_dir%/public/picture/katalog'
+
 services:
     # default configuration for services in *this* file
     _defaults:

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ asset('style/katalog/product.css') }}">
+    <title>{% block title %}onlineshop{% endblock %}</title>
+    {% block stylesheets %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    {% endblock %}
+    <style>
+        header {
+            padding-bottom: 100px;
+        }
+
+        .navbar {
+            background-color: #007bff;
+        }
+
+        .navbar-brand {
+            color: #fff !important;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand col-1">Продукты</a>
+            <a class="navbar-brand col-1" href="{{ path('mainpage') }}">Выход</a>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '->';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('admin') }}" style="text-decoration: none; color: black">Админ панель</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('katalog') }}" style="text-decoration: none; color: black">Каталог</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Товар</li>
+        </ol>
+    </nav>
+    <div class="row justify-content-start">
+        {% for product in products %}
+            <article class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card">
+                    <div class="card__top">
+                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__image">
+                            <img src="{{ asset('picture/katalog/' ~ product.img) }}" class="card-img-top" alt="{{ product.name }}">
+                        </a>
+                        <div class="card__label">-10%</div>
+                    </div>
+                    <div class="card__bottom">
+                        <div class="card__prices">
+                            <div class="card__price card__price--discount">{{ product.amount }}</div>
+                            <div class="card__price card__price--common">150 000</div>
+                        </div>
+                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__title">
+                            {{ product.name }}
+                        </a>
+                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-bs-toggle="modal" data-bs-target="#editModal" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" data-product-amount="{{ product.amount }}" data-product-img="{{ product.img }}">Редактировать товар</button>
+                        {% if not product.deleted %}
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-product-id="{{ product.id }}">Удалить</button>
+                        {% else %}
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#restoreModal" data-product-id="{{ product.id }}">Восстановить</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Модальное окно для редактирования товара -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Редактирование товара</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" method="post" enctype="multipart/form-data" action="{{ path('edit_product') }}">
+                    <input type="hidden" name="id" id="productId">
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Имя</label>
+                        <input type="text" class="form-control" id="productName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productAmount" class="form-label">Цена</label>
+                        <input type="text" class="form-control" id="productAmount" name="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productImg" class="form-label">Картинка</label>
+                        <input type="file" class="form-control" id="productImg" name="img">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для удаления товара -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Удалить товар</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить этот товар?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для восстановления товара -->
+<div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restoreModalLabel">Восстановить товар</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите восстановить этот товар?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-warning" id="confirmRestore">Восстановить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var editModal = document.getElementById('editModal');
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var productId = button.getAttribute('data-product-id');
+            var productName = button.getAttribute('data-product-name');
+            var productAmount = button.getAttribute('data-product-amount');
+            var productImg = button.getAttribute('data-product-img');
+
+            var modalTitle = editModal.querySelector('.modal-title');
+            var modalBodyInputId = editModal.querySelector('#productId');
+            var modalBodyInputName = editModal.querySelector('#productName');
+            var modalBodyInputAmount = editModal.querySelector('#productAmount');
+
+            modalTitle.textContent = 'Редактирование ' + productName;
+            modalBodyInputId.value = productId;
+            modalBodyInputName.value = productName;
+            modalBodyInputAmount.value = productAmount;
+        });
+
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var productId = button.getAttribute('data-product-id');
+            var confirmDeleteButton = deleteModal.querySelector('#confirmDelete');
+
+            confirmDeleteButton.onclick = function () {
+                fetch('{{ path('delete_product') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ id: productId })
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            location.reload();
+                        } else {
+                            alert('Ошибка при удалении товара');
+                        }
+                    });
+            };
+        });
+
+        var restoreModal = document.getElementById('restoreModal');
+        restoreModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var productId = button.getAttribute('data-product-id');
+            var confirmRestoreButton = restoreModal.querySelector('#confirmRestore');
+
+            confirmRestoreButton.onclick = function () {
+                fetch('{{ path('restore_product') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ id: productId })
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            location.reload();
+                        } else {
+                            alert('Ошибка при восстановлении товара');
+                        }
+                    });
+            };
+        });
+    });
+</script>
+</body>
+</html>

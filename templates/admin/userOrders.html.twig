@@ -99,6 +99,10 @@
             .navbar-brand {
                 color: #fff !important;
             }
+            .order-buttons {
+                display: flex;
+                gap: 10px;
+            }
         </style>
     {% endblock %}
 </head>
@@ -108,6 +112,7 @@
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a href="#" class="navbar-brand">История заказов</a>
+                <a class="navbar-brand col-2" href="{{ path('mainpage') }}">Выход</a>
             </div>
         </nav>
     </header>
@@ -126,17 +131,39 @@
             {% for check in checks|reverse %}
             {% if check.orderNumber != currentOrderNumber %}
             {% if currentOrderNumber is not null %}
+                </ul>
             {% endif %}
             <h2>
                 <span>Заказ №<span class="order-number">{{ check.orderNumber }}</span> ({{ check.data}})</span>
                 {% if check.status == 4 %}
-                    <span style="color: darkorange; font-size: 20px">Статус: В обработке</span>
+                    <span style="color: #FFA500; font-size: 20px">Статус: В обработке</span>
+                {% endif %}
+                {% if check.status == 2 %}
+                    <span style="color: #007BFF; font-size: 20px">Статус: Ожидае в пункте выдачи</span>
+                {% endif %}
+                {% if check.status == 8 %}
+                    <span style="color: #DC3545; font-size: 20px">Статус: Отклонён</span>
+                {% endif %}
+                {% if check.status == 5 %}
+                    <span style="color: #28A745; font-size: 20px">Статус: Оплачен</span>
                 {% endif %}
             </h2>
             <h3>Итоговая цена: {{ check.ItogPrice }} руб.</h3>
 
             <ul class="order-list">
                 {% set currentOrderNumber = check.orderNumber %}
+                <div class="order-buttons">
+                    <form method="post" action="{{ path('update_order_status', {'orderNumber': check.orderNumber, 'status':2}) }}">
+                        <button type="submit" class="btn btn-primary">Заказ готов к выдачи</button>
+                    </form>
+                    <form method="post" action="{{ path('update_order_status', {'orderNumber': check.orderNumber, 'status': 5}) }}">
+                        <button type="submit" class="btn btn-success">Подтвердить оплату</button>
+                    </form>
+                    <form method="post" action="{{ path('update_order_status', {'orderNumber': check.orderNumber, 'status': 8}) }}">
+                        <button type="submit" class="btn btn-danger">Отклонить</button>
+                    </form>
+
+                </div>
                 {% endif %}
                 <li class="order-item">
                     <div>

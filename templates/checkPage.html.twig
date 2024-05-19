@@ -94,6 +94,48 @@
             .return-link:hover {
                 text-decoration: underline;
             }
+            .status-processing,
+            .status-cancel,
+            .status-confirmed {
+                position: relative;
+                cursor: pointer;
+            }
+
+            .status-confirmed::after {
+                content: "Ваш заказ ожидает вас в магазине Мир инструмента";
+             }
+
+
+            .status-confirmed::after {
+                position: absolute;
+                left: 50%;
+                bottom: 125%;
+                transform: translateX(-50%);
+                background-color: #333;
+                color: #fff;
+                padding: 5px;
+                border-radius: 5px;
+                white-space: nowrap;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s;
+            }
+
+            .status-confirmed:hover::after {
+                opacity: 1;
+                visibility: visible;
+            }
+            .navbar-brand{
+                cursor: pointer;
+                font-size: 18px;
+                transition: font-size 0.3s ease;
+
+            }
+            .navbar-brand:hover{
+                font-size: 22px;
+            }
+
+
         </style>
     {% endblock %}
 </head>
@@ -114,7 +156,9 @@
 
         </div>
         <div class="order-history">
+            <div class="inf">
             <h1>История заказов</h1>
+            </div>
             {% set currentOrderNumber = null %}
             {% for check in checks|reverse %}
             {% if check.orderNumber != currentOrderNumber %}
@@ -122,11 +166,31 @@
             {% endif %}
             <h2>
                 <span>Заказ №<span class="order-number">{{ check.orderNumber }}</span> ({{ check.data}})</span>
+
                 {% if check.status == 4 %}
-                    <span style="color: darkorange; font-size: 20px">Статус: В обработке</span>
+                    <span style="color: #FFA500; font-size: 20px">Статус: В обработке</span>
                 {% endif %}
+                {% if check.status == 2 %}
+                    <span style="color: #007BFF; font-size: 20px">Статус: Ожидае в пункте выдачи</span>
+                {% endif %}
+                {% if check.status == 8 %}
+                    <span style="color: #DC3545; font-size: 20px">Статус: Отклонён</span>
+                {% endif %}
+                {% if check.status == 5 %}
+                    <span style="color: #28A745; font-size: 20px">Статус: Оплачен</span>
+                {% endif %}
+
             </h2>
             <h3>Итоговая цена: {{ check.ItogPrice }} руб.</h3>
+            {% if check.status == 2 %}
+
+            <a class="navbar-brand col-2"  href="{{ path('infopage') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
+                    <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                </svg>
+                Пункт выдачи: Магазин мир инструмента
+            </a>
+            {% endif %}
 
             <ul class="order-list">
                 {% set currentOrderNumber = check.orderNumber %}

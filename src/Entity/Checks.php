@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ChecksRepository::class)]
 class Checks
 
-{    public const STATUS_NEW = '1';
+{   public const STATUS_NEW = '1';
     public const STATUS_CONFIRMED = '2';
     public const STATUS_PAID = '3';
     public const STATUS_PROCESSING = '4';

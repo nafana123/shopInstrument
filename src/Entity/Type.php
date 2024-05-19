@@ -19,6 +19,9 @@ class Type
     #[ORM\Column(length: 255)]
     private ?string $img = null;
 
+    #[ORM\Column(length: 255)]
+    private ?int $deleted = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -47,4 +50,15 @@ class Type
 
         return $this;
     }
+
+    public function getDeleted(): ?int
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(?int $deleted): void
+    {
+        $this->deleted = $deleted;
+    }
+
 }

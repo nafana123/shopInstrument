@@ -20,13 +20,14 @@ class Product
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $description = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $amount = null;
 
     #[ORM\Column(length: 255)]
     private ?string $img = null;
+
+    #[ORM\Column(length: 255)]
+    private ?int $deleted = 0;
+
 
     public function getId(): ?int
     {
@@ -57,18 +58,6 @@ class Product
         return $this;
     }
 
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
     public function getAmount(): ?string
     {
         return $this->amount;
@@ -91,5 +80,14 @@ class Product
         $this->img = $img;
 
         return $this;
+    }
+    public function getDeleted(): ?int
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(?int $deleted): void
+    {
+        $this->deleted = $deleted;
     }
 }
