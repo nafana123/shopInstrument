@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Checks;
+use App\Entity\Images;
+use App\Entity\InfoProduct;
 use App\Entity\Product;
 use App\Entity\Type;
 use App\Repository\ChecksRepository;
@@ -198,7 +200,6 @@ public function index(){
     public function editType(Request $request)
     {
         $katalogDirectory = $this->getParameter('katalog_directory');
-        dump($katalogDirectory); // временный вывод для проверки
         $id = $request->request->get('id');
         $name = $request->request->get('name');
         $imgFile = $request->files->get('img');
@@ -208,7 +209,6 @@ public function index(){
         if ($type) {
             $type->setName($name);
             if ($imgFile) {
-                // Сохранение оригинального имени файла
                 $originalFilename = pathinfo($imgFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $originalFilename . '.' . $imgFile->getClientOriginalExtension();
                 $imgFile->move($katalogDirectory, $newFilename);
@@ -285,7 +285,9 @@ public function index(){
         $products = $this->entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
 
         return $this->render('admin/products.html.twig', [
-            'products' => $products
+            'products' => $products,
+            'typeId' => $typeId, // Передаем typeId в шаблон
+
         ]);
     }
 
@@ -357,4 +359,151 @@ public function index(){
 
         return new JsonResponse(['status' => 'error'], 404);
     }
+    /**
+     * @Route("/add_product/{typeId}", name="add_product", methods={"POST"})
+     */
+    public function addProduct(Request $request, $typeId)
+    {
+        $katalogDirectory = $this->getParameter('katalog_directory');
+        $name = $request->request->get('name');
+        $amount = $request->request->get('amount');
+        $imgFile = $request->files->get('img');
+
+        $product = new Product();
+        $product->setName($name);
+        $product->setAmount($amount);
+        $product->setTypes($typeId);
+        $product->setDeleted(0);
+
+        if ($imgFile) {
+            $originalFilename = pathinfo($imgFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $newFilename = $originalFilename . '.' . $imgFile->getClientOriginalExtension();
+
+            $imgFile->move($katalogDirectory, $newFilename);
+            $product->setImg($newFilename);
+        }
+
+        $this->entityManager->persist($product);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('products', [
+            'name' => $name,
+            'typeId' => $typeId,
+        ]);
+    }
+
+    /**
+     * @Route("/{typeId}/admin_info_product/{id}", name="admin_info_product")
+     */
+    public function mainpage($typeId, $id, Request $request, EntityManagerInterface $entityManager)
+    {
+        $product = $entityManager->getRepository(Product::class)->findOneBy(['types' => $typeId, 'id' => $id]);
+        $images = $entityManager->getRepository(Images::class)->findBy(['id_product' => $id]);
+        $infoProduct = $entityManager->getRepository(InfoProduct::class)->findOneBy(['id_product' => $id]);
+
+        if (!$infoProduct) {
+            $infoProduct = new InfoProduct();
+            $infoProduct->setIdProduct($id);
+            $infoProduct->setType($typeId);
+            $infoProduct->setSale(0);
+            $infoProduct->setTime(0);
+        }
+
+        if ($request->isMethod('POST')) {
+            // Заполняем данные из формы в объект InfoProduct
+            $infoProduct->setName($request->request->get('name'));
+            $infoProduct->setPrice($request->request->get('price'));
+            $infoProduct->setStock($request->request->get('stock'));
+            $infoProduct->setDescription($request->request->get('description'));
+            $infoProduct->setManufacturer($request->request->get('manufacturer'));
+            $infoProduct->setWeight($request->request->get('weight'));
+            $infoProduct->setVolume($request->request->get('volume'));
+            $infoProduct->setVoltage($request->request->get('voltage'));
+            $infoProduct->setRown($request->request->get('rown'));
+            $infoProduct->setEngine($request->request->get('engine'));
+            $infoProduct->setPower($request->request->get('power'));
+            $infoProduct->setMixtures($request->request->get('mixtures'));
+            $infoProduct->setDrive($request->request->get('drive'));
+            $infoProduct->setRetainer($request->request->get('retainer'));
+            $infoProduct->setConnections($request->request->get('connections'));
+            $infoProduct->setWheels($request->request->get('wheels'));
+            $infoProduct->setDimensions($request->request->get('dimensions'));
+            $infoProduct->setCountry($request->request->get('country'));
+            $infoProduct->setMotherland($request->request->get('motherland'));
+
+            $uploadDir = $this->getParameter('katalog_directorys');
+
+            // Обработка замены изображений
+            $replaceImages = $request->files->get('replaceImages');
+            if ($replaceImages && count($replaceImages) > 0) {
+                foreach ($replaceImages as $imageId => $imgFile) {
+                    if ($imgFile) {
+                        $originalFilename = pathinfo($imgFile->getClientOriginalName(), PATHINFO_FILENAME);
+                        $newFilename = $originalFilename . '-' . uniqid() . '.' . $imgFile->getClientOriginalExtension();
+                        $imgFile->move($uploadDir, $newFilename);
+
+                        $img = $entityManager->getRepository(Images::class)->find($imageId);
+                        if ($img) {
+                            $img->setImg($newFilename);
+                            $entityManager->persist($img);
+
+                            // Обновление изображения в InfoProduct, если необходимо
+                            if ($infoProduct->getImg() == $img->getImg()) {
+                                $infoProduct->setImg($newFilename);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Обработка добавления новых изображений
+            $imgFiles = $request->files->get('images');
+            if ($imgFiles && count($imgFiles) > 0) {
+                $uploadedCount = 0;
+                foreach ($imgFiles as $imgFile) {
+                    if ($imgFile && $uploadedCount < 4) {
+                        $originalFilename = pathinfo($imgFile->getClientOriginalName(), PATHINFO_FILENAME);
+                        $newFilename = $originalFilename . '-' . uniqid() . '.' . $imgFile->getClientOriginalExtension();
+                        $imgFile->move($uploadDir, $newFilename);
+
+                        $img = new Images();
+                        $img->setIdProduct($id);
+                        $img->setImg($newFilename);
+
+                        $entityManager->persist($img);
+
+                        // Если нужно добавить изображение только для первого img у InfoProduct
+                        if ($uploadedCount == 0 && !$infoProduct->getImg()) {
+                            $infoProduct->setImg($newFilename);
+                        }
+
+                        $uploadedCount++;
+                    }
+                }
+            }
+
+            $entityManager->persist($infoProduct);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Информация о товаре обновлена');
+            return $this->redirectToRoute('admin_info_product', ['typeId' => $typeId, 'id' => $id]);
+        }
+
+        $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
+        $similarProducts = [];
+        foreach ($products as $similarProduct) {
+            if ($similarProduct->getId() != $id) {
+                $similarProducts[] = $similarProduct;
+            }
+        }
+
+        return $this->render('admin/AdminInfoProduct.html.twig', [
+            'product' => $product,
+            'images' => $images,
+            'infoProduct' => $infoProduct,
+            'products' => $similarProducts
+        ]);
+    }
+
+
 }
