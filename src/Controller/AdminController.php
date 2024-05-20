@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Checks;
 use App\Entity\Images;
 use App\Entity\InfoProduct;
+use App\Entity\PopularBrend;
 use App\Entity\Product;
 use App\Entity\Type;
 use App\Repository\ChecksRepository;
@@ -12,13 +13,14 @@ use App\Repository\InfoProductRepository;
 use App\Repository\UsersRepository;
 use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 
 class AdminController extends AbstractController
@@ -410,7 +412,6 @@ public function index(){
         }
 
         if ($request->isMethod('POST')) {
-            // Заполняем данные из формы в объект InfoProduct
             $infoProduct->setName($request->request->get('name'));
             $infoProduct->setPrice($request->request->get('price'));
             $infoProduct->setStock($request->request->get('stock'));
@@ -433,7 +434,6 @@ public function index(){
 
             $uploadDir = $this->getParameter('katalog_directorys');
 
-            // Обработка замены изображений
             $replaceImages = $request->files->get('replaceImages');
             if ($replaceImages && count($replaceImages) > 0) {
                 foreach ($replaceImages as $imageId => $imgFile) {
@@ -447,7 +447,6 @@ public function index(){
                             $img->setImg($newFilename);
                             $entityManager->persist($img);
 
-                            // Обновление изображения в InfoProduct, если необходимо
                             if ($infoProduct->getImg() == $img->getImg()) {
                                 $infoProduct->setImg($newFilename);
                             }
@@ -456,7 +455,6 @@ public function index(){
                 }
             }
 
-            // Обработка добавления новых изображений
             $imgFiles = $request->files->get('images');
             if ($imgFiles && count($imgFiles) > 0) {
                 $uploadedCount = 0;
@@ -472,7 +470,6 @@ public function index(){
 
                         $entityManager->persist($img);
 
-                        // Если нужно добавить изображение только для первого img у InfoProduct
                         if ($uploadedCount == 0 && !$infoProduct->getImg()) {
                             $infoProduct->setImg($newFilename);
                         }
@@ -505,5 +502,76 @@ public function index(){
         ]);
     }
 
+    /**
+     * @Route("/admin/brend", name="brend")
+     */
+    public function list(Request $request)
+    {
+        $imgs =  $this->entityManager->getRepository(PopularBrend::class)->findAll();
 
+        return $this->render('admin/brand.html.twig', [
+            'imgs' => $imgs,
+        ]);
+    }
+    /**
+     * @Route("/admin/brand/add", name="add_popular_brand", methods={"POST"})
+     */
+    public function add(Request $request, SluggerInterface $slugger): Response
+    {
+        $uploadedFile = $request->files->get('brandImage');
+        if ($uploadedFile) {
+            $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$uploadedFile->getClientOriginalExtension();
+
+            try {
+                $uploadedFile->move(
+                    $this->getParameter('brand_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+            }
+
+            $popularBrend = new PopularBrend();
+            $popularBrend->setImg($newFilename);
+
+            $this->entityManager->persist($popularBrend);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('brend');
+        }
+
+        return new Response('Ошибка загрузки файла', Response::HTTP_BAD_REQUEST);
+    }
+    /**
+     * @Route("/admin/brand/delete/{id}", name="delete_brand", methods={"POST"})
+     */
+    public function deleteBrand($id): JsonResponse
+    {
+        $brand = $this->entityManager->getRepository(PopularBrend::class)->find($id);
+
+        if ($brand) {
+            $brand->setDeleted(1);
+            $this->entityManager->flush();
+            return new JsonResponse(['status' => 'success']);
+        }
+
+        return new JsonResponse(['status' => 'error', 'message' => 'Brand not found']);
+    }
+
+    /**
+     * @Route("/admin/brand/restore/{id}", name="restore_brand", methods={"POST"})
+     */
+    public function restoreBrand($id): JsonResponse
+    {
+        $brand = $this->entityManager->getRepository(PopularBrend::class)->find($id);
+
+        if ($brand) {
+            $brand->setDeleted(0);
+            $this->entityManager->flush();
+            return new JsonResponse(['status' => 'success']);
+        }
+
+        return new JsonResponse(['status' => 'error', 'message' => 'Brand not found']);
+    }
 }

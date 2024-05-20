@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Images;
+use App\Entity\PopularBrend;
 use App\Entity\Type;
 use App\Entity\InfoProduct;
 use App\Services\CookieService;
@@ -20,6 +22,7 @@ class MainController extends AbstractController
     {
         $login = $this->getUserLogin($request, $cookieService);
         $types = $entityManager->getRepository(Type::class)->findAll();
+        $imgs = $entityManager->getRepository(PopularBrend::class)->findAll();
 
         $infoProduct = $entityManager->getRepository(InfoProduct::class)->findBy([], ['sale' => 'DESC'], 4);
 
@@ -27,6 +30,7 @@ class MainController extends AbstractController
             'login' => $login,
             'types' => $types,
             'infoProduct' => $infoProduct,
+            'imgs' => $imgs,
         ]);
     }
 

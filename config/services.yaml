@@ -1,6 +1,8 @@
 parameters:
     katalog_directory: '%kernel.project_dir%/public/picture/katalog'
     katalog_directorys: '%kernel.project_dir%/public/picture/product'
+    brand_directory: '%kernel.project_dir%/public/picture/brand'
+
 
 services:
     # default configuration for services in *this* file

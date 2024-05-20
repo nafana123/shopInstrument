@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ asset('style/popularBrend/popularBrend.css') }}">
+    <title>Document</title>
+    {% block stylesheets %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    {% endblock %}
+</head>
+<style>
+    header {
+        padding-bottom: 100px;
+    }
+
+    .navbar {
+        background-color: #007bff;
+    }
+
+    .navbar-brand {
+        color: #fff !important;
+    }
+</style>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand col-1">Редактирование популярных брендов</a>
+            <a class="navbar-brand col-1" href="{{ path('mainpage') }}">Выход</a>
+        </div>
+    </nav>
+</header>
+<div class="container" >
+    <nav style="--bs-breadcrumb-divider: '->';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('admin') }}" style="text-decoration: none; color: black">Админ панель</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Популярные бренды</li>
+        </ol>
+    </nav>
+    <h1 class="zag" id="popBrend">Популярные бренды</h1>
+    <form action="{{ path('add_popular_brand') }}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="brandImage">Загрузить изображение бренда:</label>
+            <input type="file" class="form-control" id="brandImage" name="brandImage" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3" style="margin-bottom: 15px">Добавить бренд</button>
+    </form>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6">
+        {% for img in imgs %}
+                <article class="col" style="padding-bottom: 25px" >
+                    <div class="card">
+                        <a href="">
+                            <div class="card-bodys">
+                                <img src="{{ asset('picture/brand/'  ~ img.img) }}"  class="img-fluid" alt="">
+                            </div>
+                        </a>
+                    </div>
+                    {% if img.deleted == 0 %}
+                        <button type="button" class="btn btn-danger mt-3 delete-btn" style="width: 100%" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ img.id }}">Удалить</button>
+                    {% else %}
+                        <button type="button" class="btn btn-warning mt-3 restore-btn" style="width: 100%" data-bs-toggle="modal" data-bs-target="#restoreModal" data-id="{{ img.id }}">Восстановить</button>
+                    {% endif %}
+                </article>
+        {% endfor %}
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Удалить бренд</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить этот бренд?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restoreModalLabel">Восстановить бренд</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите восстановить этот бренд?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-warning" id="confirmRestore">Восстановить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var brandId = button.getAttribute('data-id');
+            var confirmDeleteButton = deleteModal.querySelector('#confirmDelete');
+
+            confirmDeleteButton.onclick = function () {
+                fetch('/admin/brand/delete/' + brandId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            location.reload();
+                        } else {
+                            alert('Ошибка при удалении бренда');
+                        }
+                    });
+            };
+        });
+
+        var restoreModal = document.getElementById('restoreModal');
+        restoreModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var brandId = button.getAttribute('data-id');
+            var confirmRestoreButton = restoreModal.querySelector('#confirmRestore');
+
+            confirmRestoreButton.onclick = function () {
+                fetch('/admin/brand/restore/' + brandId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            location.reload();
+                        } else {
+                            alert('Ошибка при восстановлении бренда');
+                        }
+                    });
+            };
+        });
+    });
+</script>
+
+</body>
+</html>
+
