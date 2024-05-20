@@ -10,7 +10,8 @@
     {% endblock %}
     <style>
         .btn-added-to-cart {
-            background-color: blue !important;
+            background-color: green ;
+            color: white;
         }
     </style>
 </head>
@@ -25,26 +26,26 @@
     <div class="row justify-content-start">
         {% for product in products %}
             {% if product.deleted == 0 %}
-            <article class="col-sm-6 col-md-4 col-lg-3">
-                <div class="card">
-                    <div class="card__top">
-                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__image">
-                            <img src="{{ asset('picture/katalog/' ~ product.img) }}" class="card-img-top" alt="{{ product.name }}">
-                        </a>
-                        <div class="card__label">-10%</div>
-                    </div>
-                    <div class="card__bottom">
-                        <div class="card__prices">
-                            <div class="card__price card__price--discount">{{ product.amount }}</div>
-                            <div class="card__price card__price--common">150 000</div>
+                <article class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card">
+                        <div class="card__top">
+                            <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__image">
+                                <img src="{{ asset('picture/katalog/' ~ product.img) }}" class="card-img-top" alt="{{ product.name }}">
+                            </a>
+                            <div class="card__label">-10%</div>
                         </div>
-                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__title">
-                            {{ product.name }}
-                        </a>
-                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-product-id="{{ product.id }}" onclick="addToCart(this)">В корзину</button>
+                        <div class="card__bottom">
+                            <div class="card__prices">
+                                <div class="card__price card__price--discount">{{ product.amount }}</div>
+                                <div class="card__price card__price--common">150 000</div>
+                            </div>
+                            <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__title">
+                                {{ product.name }}
+                            </a>
+                            <button type="button" class="btn btn-outline-success btn-add-to-cart" data-product-id="{{ product.id }}" onclick="addToCart(this)">В корзину</button>
+                        </div>
                     </div>
-                </div>
-            </article>
+                </article>
             {% endif %}
         {% endfor %}
     </div>
@@ -53,7 +54,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         updateCartItemCount();
         updateCartButtonState();
-
     });
 
     function addToCart(button) {
@@ -70,8 +70,8 @@
             for (var i = 0; i < items.length; i++) {
                 var parts = items[i].split(':');
                 if (parts[0] === productId) {
-                    parts[1] = parseInt(parts[1]) + quantity;
-                    found = true;
+                    window.location.href = '{{ path("basket") }}';
+                    return;
                 }
                 updatedCart += (i > 0 ? ',' : '') + parts.join(':');
             }
@@ -102,9 +102,11 @@
                 if (found) {
                     button.classList.add('btn-added-to-cart');
                     button.textContent = 'В корзине';
+                    button.dataset.inCart = 'true';
                 } else {
                     button.classList.remove('btn-added-to-cart');
                     button.textContent = 'В корзину';
+                    button.dataset.inCart = 'false';
                 }
             });
         }
@@ -124,7 +126,5 @@
 </script>
 </body>
 </html>
-
-
 
 {% include 'footer/footer.html.twig' %}

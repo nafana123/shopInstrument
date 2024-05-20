@@ -7,6 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ asset('style/popularProducts/popularProducts.css') }}">
 </head>
+<style>
+    .btn-added-to-cart {
+        background-color: green ;
+        color: white;
+        width: 33%;
+    }
+</style>
 <body>
 <div class="container">
     <h1 class="zag" id="popular">Популярные товары</h1>
@@ -18,13 +25,86 @@
                     <div class="card-body text-center">
                         <h5 class="card-title">{{ infoProducts.name }}</h5>
                         <p class="card-text">Цена: {{ infoProducts.price }} ₽</p>
-                        <button type="button" class="btn btn-success">Добавить в корзину</button>
+                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-product-id="{{ infoProducts.idProduct }}" style="width: 100%" onclick="addToCart(this)">В корзину</button>
                     </div>
                 </div>
             </article>
         {% endfor %}
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartItemCount();
+        updateCartButtonState();
+    });
 
+    function addToCart(button) {
+        var productId = button.dataset.productId;
+        var quantity = 1;
+        var cartItem = productId + ':' + quantity;
+        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
+        var updatedCart = '';
+
+        if (existingCartItems) {
+            var items = existingCartItems.split(',');
+            var found = false;
+
+            for (var i = 0; i < items.length; i++) {
+                var parts = items[i].split(':');
+                if (parts[0] === productId) {
+                    window.location.href = '{{ path("basket") }}';
+                    return;
+                }
+                updatedCart += (i > 0 ? ',' : '') + parts.join(':');
+            }
+
+            if (!found) {
+                updatedCart += ',' + cartItem;
+            }
+        } else {
+            updatedCart = cartItem;
+        }
+
+        document.cookie = 'cart=' + updatedCart + '; path=/';
+        updateCartButtonState();
+        updateCartItemCount();
+    }
+
+    function updateCartButtonState() {
+        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
+        var addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+
+        if (existingCartItems) {
+            var items = existingCartItems.split(',');
+            addToCartButtons.forEach(function(button) {
+                var productId = button.dataset.productId;
+                var found = items.some(function(item) {
+                    return item.split(':')[0] === productId;
+                });
+                if (found) {
+                    button.classList.add('btn-added-to-cart');
+                    button.textContent = 'Товар добавлен в корзину';
+                    button.dataset.inCart = 'true';
+                } else {
+                    button.classList.remove('btn-added-to-cart');
+                    button.textContent = 'В корзину';
+                    button.dataset.inCart = 'false';
+                }
+            });
+        }
+    }
+
+    function updateCartItemCount() {
+        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
+        var itemCountElement = document.getElementById('cartItemCount');
+
+        if (existingCartItems) {
+            var items = existingCartItems.split(',');
+            itemCountElement.textContent = items.length;
+        } else {
+            itemCountElement.textContent = 0;
+        }
+    }
+</script>
 </body>
 </html>

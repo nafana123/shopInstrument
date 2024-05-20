@@ -79,7 +79,15 @@
                         </p>
                     </a>
                 </div>
-                <a href="#" class="btn btn-success mt-2" style="width: 100%; height: 50px;" onclick="openModal()">Оформить заказ</a>
+                {% if login is not empty %}
+                    <a href="#" class="btn btn-success mt-2" style="width: 100%; height: 50px;" onclick="openModal()">Оформить заказ</a>
+
+                {% else %}
+                    <a href="#" class="btn btn-success mt-2" style="width: 100%; height: 60px;">Вы не можете оформить заказ пока вы не авторизованны</a>
+                    <div class="aa" style="text-align: center">
+                        <a href="{{ path('vhod') }}" style="text-decoration: none;" >Авторизоваться</a>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
     </div>
@@ -151,15 +159,11 @@
     }
 
     function updateModalTotalPrice() {
-        var totalPrice = 0;
-
-        $('.table tbody tr').each(function() {
-            var totalTd = $(this).find('td:nth-child(5)');
-            var total = parseFloat(totalTd.text().replace(' руб.', ''));
-
-            if (!isNaN(total)) {
-                totalPrice = total;
-            }
+        let totalPrice = 0;
+        const totalElements = document.querySelectorAll('[id^="total_"]');
+        totalElements.forEach(function(element) {
+            const total = parseFloat(element.innerText);
+            totalPrice += total;
         });
         $('#modalTotalPrice').text(totalPrice.toFixed() + ' руб.');
     }
@@ -207,18 +211,15 @@
     }
 
     function updateTotalPrice() {
-        var totalPriceElement = $('#totalPrice');
-        var totalPrice = 0;
-        $('.table tbody tr').each(function() {
-            var totalTd = $(this).find('td:nth-child(5)');
-            var total = parseFloat(totalTd.text().replace(' руб.', ''));
-            console.log(total);
-
-            if (!isNaN(total)) {
-                totalPrice = total;
-            }
+        let totalPrice = 0;
+        const totalElements = document.querySelectorAll('[id^="total_"]');
+        totalElements.forEach(function(element) {
+            const total = parseFloat(element.innerText);
+            console.log(total)
+            totalPrice += total;
         });
-        totalPriceElement.text(totalPrice.toFixed() + ' руб.');
+
+        document.getElementById("totalPrice").innerText = totalPrice.toFixed(2) + " руб.";
     }
 
 

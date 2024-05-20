@@ -14,6 +14,13 @@
         ="anonymous">
     {% endblock %}
 </head>
+<style>
+    .btn-added-to-cart {
+        background-color: green ;
+        color: white;
+        width: 33%;
+    }
+</style>
 <body>
 <div class="containers">
     <div class="containermain">
@@ -41,7 +48,7 @@
             <p class="nostock">Нет в наличии</p>
         {% endif %}
         <h3>{{ infoProduct.price }} Р</h3>
-        <button type="button" class="btn btn-success add-to-cart-btn" data-product-id="{{ product.id }}">Добавить в корзину</button>
+        <button type="button" class="btn btn-outline-success btn-add-to-cart" style="width: 33%" data-product-id="{{ product.id }}" onclick="addToCart(this)">Добавить в корзину</button>
         <p>
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
                 <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
@@ -119,7 +126,7 @@
                         <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__title">
                             {{ product.name }}
                         </a>
-                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-product-id="{{ product.id }}" onclick="addToCart(this)">В корзину</button>
+                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-product-id="{{ product.id }}" style="width: 100%" onclick="addToCart(this)">В корзину</button>
                     </div>
                 </div>
             </article>
@@ -156,6 +163,79 @@
             thumbnails[0].classList.add("selected-thumbnail");
         }
     };
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartItemCount();
+        updateCartButtonState();
+    });
+
+    function addToCart(button) {
+        var productId = button.dataset.productId;
+        var quantity = 1;
+        var cartItem = productId + ':' + quantity;
+        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
+        var updatedCart = '';
+
+        if (existingCartItems) {
+            var items = existingCartItems.split(',');
+            var found = false;
+
+            for (var i = 0; i < items.length; i++) {
+                var parts = items[i].split(':');
+                if (parts[0] === productId) {
+                    window.location.href = '{{ path("basket") }}';
+                    return;
+                }
+                updatedCart += (i > 0 ? ',' : '') + parts.join(':');
+            }
+
+            if (!found) {
+                updatedCart += ',' + cartItem;
+            }
+        } else {
+            updatedCart = cartItem;
+        }
+
+        document.cookie = 'cart=' + updatedCart + '; path=/';
+        updateCartButtonState();
+        updateCartItemCount();
+    }
+
+    function updateCartButtonState() {
+        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
+        var addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+
+        if (existingCartItems) {
+            var items = existingCartItems.split(',');
+            addToCartButtons.forEach(function(button) {
+                var productId = button.dataset.productId;
+                var found = items.some(function(item) {
+                    return item.split(':')[0] === productId;
+                });
+                if (found) {
+                    button.classList.add('btn-added-to-cart');
+                    button.textContent = 'В корзине';
+                    button.dataset.inCart = 'true';
+                } else {
+                    button.classList.remove('btn-added-to-cart');
+                    button.textContent = 'В корзину';
+                    button.dataset.inCart = 'false';
+                }
+            });
+        }
+    }
+
+    function updateCartItemCount() {
+        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
+        var itemCountElement = document.getElementById('cartItemCount');
+
+        if (existingCartItems) {
+            var items = existingCartItems.split(',');
+            itemCountElement.textContent = items.length;
+        } else {
+            itemCountElement.textContent = 0;
+        }
+    }
+
 
 
 </script>
