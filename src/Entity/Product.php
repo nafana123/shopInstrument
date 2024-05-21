@@ -23,6 +23,13 @@ class Product
     private ?string $amount = null;
 
     #[ORM\Column(length: 255)]
+    private ?string $noSale = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $discont = null;
+
+
+    #[ORM\Column(length: 255)]
     private ?string $img = null;
 
     #[ORM\Column(length: 255)]
@@ -89,5 +96,28 @@ class Product
     public function setDeleted(?int $deleted): void
     {
         $this->deleted = $deleted;
+    }
+
+    public function getNoSale(): ?string
+    {
+        return $this->noSale;
+    }
+
+    public function setNoSale(?string $noSale): self
+    {
+        $this->noSale = $noSale;
+
+        return $this;
+    }
+
+    public function getDiscont(): ?string
+    {
+        return $this->discont;
+    }
+
+    public function setDiscont(?string $discont): self
+    {
+        $this->discont = $discont;
+        return $this;
     }
 }

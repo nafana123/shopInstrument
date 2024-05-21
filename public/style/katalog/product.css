@@ -84,7 +84,7 @@
 .card__price--discount::before {
     content: "Со скидкой";
     font-weight: 400;
-    font-size: 13px;
+    font-size: 18px;
     color: #bfbfbf;
 }
 
@@ -100,7 +100,7 @@
 .card__price--common::before {
     content: "Обычная";
     font-weight: 400;
-    font-size: 13px;
+    font-size: 18px;
     color: #bfbfbf;
 }
 
