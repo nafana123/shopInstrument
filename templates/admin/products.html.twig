@@ -50,17 +50,17 @@
                         <a href="{{ path('admin_info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__image">
                             <img src="{{ asset('picture/katalog/' ~ product.img) }}" class="card-img-top" alt="{{ product.name }}">
                         </a>
-                        <div class="card__label">-10%</div>
+                        <div class="card__label">-{{ product.discont }}%</div>
                     </div>
                     <div class="card__bottom">
                         <div class="card__prices">
                             <div class="card__price card__price--discount">{{ product.amount }}</div>
-                            <div class="card__price card__price--common">150 000</div>
+                            <div class="card__price card__price--common">{{ product.noSale }}</div>
                         </div>
                         <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__title">
                             {{ product.name }}
                         </a>
-                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-bs-toggle="modal" data-bs-target="#editModal" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" data-product-amount="{{ product.amount }}" data-product-img="{{ product.img }}">Редактировать товар</button>
+                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-bs-toggle="modal" data-bs-target="#editModal" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" data-product-amount="{{ product.amount }}" data-product-noSale="{{ product.noSale }}" data-product-discont="{{ product.discont }}" data-product-img="{{ product.img }}">Редактировать товар</button>
                         {% if not product.deleted %}
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-product-id="{{ product.id }}">Удалить</button>
                         {% else %}
@@ -87,8 +87,16 @@
                         <input type="text" class="form-control" id="addProductName" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="addProductAmount" class="form-label">Цена</label>
+                        <label for="addProductAmount" class="form-label">Цена со скидкой</label>
                         <input type="text" class="form-control" id="addProductAmount" name="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addProductNoSale" class="form-label">Цена без скидки</label>
+                        <input type="text" class="form-control" id="addProductNoSale" name="noSale" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addProductDiscont" class="form-label">Скидка (%)</label>
+                        <input type="text" class="form-control" id="addProductDiscont" name="discont" required>
                     </div>
                     <div class="mb-3">
                         <label for="addProductImg" class="form-label">Картинка</label>
@@ -100,8 +108,6 @@
         </div>
     </div>
 </div>
-
-
 
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -118,8 +124,16 @@
                         <input type="text" class="form-control" id="productName" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="productAmount" class="form-label">Цена</label>
+                        <label for="productAmount" class="form-label">Цена со скидкой</label>
                         <input type="text" class="form-control" id="productAmount" name="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productNoSale" class="form-label">Цена без скидки</label>
+                        <input type="text" class="form-control" id="productNoSale" name="noSale" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productDiscont" class="form-label">Скидка (%)</label>
+                        <input type="text" class="form-control" id="productDiscont" name="discont" required>
                     </div>
                     <div class="mb-3">
                         <label for="productImg" class="form-label">Картинка</label>
@@ -177,17 +191,23 @@
             var productId = button.getAttribute('data-product-id');
             var productName = button.getAttribute('data-product-name');
             var productAmount = button.getAttribute('data-product-amount');
+            var productNoSale = button.getAttribute('data-product-noSale');
+            var productDiscont = button.getAttribute('data-product-discont');
             var productImg = button.getAttribute('data-product-img');
 
             var modalTitle = editModal.querySelector('.modal-title');
             var modalBodyInputId = editModal.querySelector('#productId');
             var modalBodyInputName = editModal.querySelector('#productName');
             var modalBodyInputAmount = editModal.querySelector('#productAmount');
+            var modalBodyInputNoSale = editModal.querySelector('#productNoSale');
+            var modalBodyInputDiscont = editModal.querySelector('#productDiscont');
 
             modalTitle.textContent = 'Редактирование ' + productName;
             modalBodyInputId.value = productId;
             modalBodyInputName.value = productName;
             modalBodyInputAmount.value = productAmount;
+            modalBodyInputNoSale.value = productNoSale;
+            modalBodyInputDiscont.value = productDiscont;
         });
 
         var deleteModal = document.getElementById('deleteModal');

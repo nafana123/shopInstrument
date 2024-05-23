@@ -9,9 +9,8 @@
 </head>
 <style>
     .btn-added-to-cart {
-        background-color: green ;
-        color: white;
-        width: 33%;
+        background: whitesmoke;
+        color: green;
     }
 </style>
 <body>
@@ -25,7 +24,7 @@
                     <div class="card-body text-center">
                         <h5 class="card-title">{{ infoProducts.name }}</h5>
                         <p class="card-text">Цена: {{ infoProducts.price }} ₽</p>
-                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-product-id="{{ infoProducts.idProduct }}" style="width: 100%" onclick="addToCart(this)">В корзину</button>
+                        <button type="button" class="btn btn-success btn-add-to-cart" data-product-id="{{ infoProducts.idProduct }}" style="width: 100%" onclick="addToCart(this)">В корзину</button>
                     </div>
                 </div>
             </article>

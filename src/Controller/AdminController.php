@@ -303,6 +303,8 @@ public function index(){
         $id = $request->request->get('id');
         $name = $request->request->get('name');
         $amount = $request->request->get('amount');
+        $noSale = $request->request->get('noSale');
+        $discont = $request->request->get('discont');
         $imgFile = $request->files->get('img');
 
         $product = $this->entityManager->getRepository(Product::class)->find($id);
@@ -310,6 +312,8 @@ public function index(){
         if ($product) {
             $product->setName($name);
             $product->setAmount($amount);
+            $product->setNoSale($noSale);
+            $product->setDiscont($discont);
 
             if ($imgFile) {
                 $originalFilename = pathinfo($imgFile->getClientOriginalName(), PATHINFO_FILENAME);
