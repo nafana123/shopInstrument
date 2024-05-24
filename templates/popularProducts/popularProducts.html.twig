@@ -8,10 +8,16 @@
     <link rel="stylesheet" href="{{ asset('style/popularProducts/popularProducts.css') }}">
 </head>
 <style>
-    .btn-added-to-cart {
-        background: whitesmoke;
-        color: green;
+
+    .cards:hover {
+        transform: scale(1.05);
     }
+    .cards img{
+        width: 250px;
+        height: 200px;
+        margin-left: 15px;
+    }
+
 </style>
 <body>
 <div class="container">
@@ -19,18 +25,24 @@
     <div class="row justify-content-center">
         {% for infoProducts in infoProduct %}
             <article class="col-sm-6 col-md-4 col-lg-3">
-                <div class="cards">
-                    <img src="{{ asset('picture/product/' ~ infoProducts.img) }}" class="img-fluid" alt="{{ infoProducts.name }}">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ infoProducts.name }}</h5>
-                        <p class="card-text">Цена: {{ infoProducts.price }} ₽</p>
-                        <button type="button" class="btn btn-success btn-add-to-cart" data-product-id="{{ infoProducts.idProduct }}" style="width: 100%" onclick="addToCart(this)">В корзину</button>
+                <a href="{{ path('info_product', {'typeId': infoProducts.type, 'name': infoProducts.name, 'id': infoProducts.idProduct}) }}" class="card__image" style="text-decoration: none; color: black">
+                    <div class="cards" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; transition: transform 0.3s;">
+                        <img src="{{ asset('picture/product/' ~ infoProducts.img) }}" class="img-fluid" alt="{{ infoProducts.name }}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title" style="padding-bottom: 10px; margin-top: 10px">{{ infoProducts.name }}</h5>
+                            <p class="card-text" style="font-size: 25px;padding-bottom: 10px" >Цена: {{ infoProducts.price }} ₽</p>
+                        </div>
                     </div>
-                </div>
+                </a>
+                <button type="button" class="btn btn-success btn-add-to-cart"  data-product-id="{{ infoProducts.idProduct }}" style="width: 100%; margin-top: 20px" onclick="addToCart(this)">В корзину</button>
+
             </article>
+
         {% endfor %}
     </div>
 </div>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         updateCartItemCount();

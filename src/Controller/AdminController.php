@@ -374,12 +374,16 @@ public function index(){
         $name = $request->request->get('name');
         $amount = $request->request->get('amount');
         $imgFile = $request->files->get('img');
+        $noSale = $request->request->get('noSale');
+        $discont = $request->request->get('discont');
 
         $product = new Product();
         $product->setName($name);
         $product->setAmount($amount);
         $product->setTypes($typeId);
         $product->setDeleted(0);
+        $product->setNoSale($noSale);
+        $product->setDiscont($discont);
 
         if ($imgFile) {
             $originalFilename = pathinfo($imgFile->getClientOriginalName(), PATHINFO_FILENAME);

@@ -16,10 +16,11 @@
 </head>
 <style>
     .btn-added-to-cart {
-        background-color: green ;
-        color: white;
-        width: 33%;
+        background: whitesmoke;
+        color: green;
     }
+
+
 </style>
 <body>
 <div class="containers">
@@ -86,35 +87,54 @@
  <h1 style="margin-top: 50px">Схожие товары</h1>
     <div class="row justify-content-start">
         {% for product in products %}
-            <article class="col-sm-6 col-md-4 col-lg-3">
-                <div class="card">
-                    <div class="card__top">
-                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__image">
-                            <img src="{{ asset('picture/katalog/' ~ product.img) }}" class="card-img-top" alt="{{ product.name }}">
-                        </a>
-                        <div class="card__label">-10%</div>
-                    </div>
-                    <div class="card__bottom">
-                        <div class="card__prices">
-                            <div class="card__price card__price--discount">{{ product.amount }}</div>
-                            <div class="card__price card__price--common">150 000</div>
+            {% if product.deleted == 0 %}
+                <article class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card">
+                        <div class="card__top">
+                            <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__image">
+                                <img src="{{ asset('picture/katalog/' ~ product.img) }}" class="card-img-top" alt="{{ product.name }}">
+                            </a>
+                            <div class="card__label">-{{ product.discont }} %</div>
                         </div>
-                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__title">
-                            {{ product.name }}
-                        </a>
-                        <button type="button" class="btn btn-outline-success btn-add-to-cart" data-product-id="{{ product.id }}" style="width: 100%" onclick="addToCart(this)">В корзину</button>
+                        <div class="card__bottom">
+                            <div class="card__prices">
+                                <div class="card__price card__price--discount" style="font-size: 25px">{{ product.amount }}</div>
+                                <div class="card__price card__price--common" style="font-size: 22px">{{ product.noSale }}</div>
+                            </div>
+                            <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" style="font-size: 19px" class="card__title">
+                                {{ product.name }}
+                            </a>
+                            <button type="button" class="btn btn-success btn-add-to-cart" style="width: 100%; margin-left: 0px"  data-product-id="{{ product.id }}" onclick="addToCart(this)">Добавить в корзину</button>
+                        </div>
                     </div>
-                </div>
-            </article>
+                </article>
+            {% endif %}
         {% endfor %}
-
-
     </div>
 </div>
+<div class="container">
+    <h1 class="zag" id="popular">Популярные товары</h1>
+    <div class="row justify-content-center">
+        {% for infoProds in infoProd %}
+            <article class="col-sm-6 col-md-4 col-lg-3">
+                <a href="{{ path('info_product', {'typeId': infoProds.type, 'name': infoProds.name, 'id': infoProds.idProduct}) }}" class="card__image" style="text-decoration: none; color: black">
+                    <div class="cards" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; transition: transform 0.3s;">
+                        <img src="{{ asset('picture/product/' ~ infoProds.img) }}" style="width: 250px; height: 200px" class="img-fluid" alt="{{ infoProds.name }}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title" style="padding-bottom: 10px; margin-top: 10px">{{ infoProds.name }}</h5>
+                            <p class="card-text" style="font-size: 25px;padding-bottom: 10px" >Цена: {{ infoProds.price }} ₽</p>
+                        </div>
+                    </div>
+                </a>
+                <button type="button" class="btn btn-success btn-add-to-cart"  data-product-id="{{ infoProds.idProduct }}" style="width: 100%; margin-top: 20px" onclick="addToCart(this)">В корзину</button>
+
+            </article>
+
+        {% endfor %}
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-{% include 'popularProducts/popularProducts.html.twig' %}
-
 
 <script>
     function showImage(element, imageUrl, productId) {
@@ -193,7 +213,7 @@
                     button.dataset.inCart = 'true';
                 } else {
                     button.classList.remove('btn-added-to-cart');
-                    button.textContent = 'В корзину';
+                    button.textContent = 'Добавить в корзину';
                     button.dataset.inCart = 'false';
                 }
             });

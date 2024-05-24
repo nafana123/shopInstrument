@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('style/header/header.css') }}">
+    <style>
+        /* Стили для сообщения об ошибке */
+        #searchError {
+            display: none;
+            color: red;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             updateCartItemCount();
@@ -14,72 +23,119 @@
             document.getElementById('cartItemCount').textContent = cartItems ? cartItems.split(',').length : 0;
         }
     </script>
-
 </head>
 
 <body>
 {% block header %}
-<nav class="navbar navbar-expand-lg bg-body-tertiary ">
-    <div class="container-fluid">
-        <p class="navbar-brand col-1" href="#"></p>
-        <a class="navbar-brand col-2" href="{{ path('mainpage') }}">Мир инструмента</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Переключатель навигации">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <form class="d-flex col-6 " role="search">
-                <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
-            </form>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
-                {% if login is not empty %}
-                    <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ login }}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary ">
+        <div class="container-fluid">
+            <p class="navbar-brand col-1" href="#"></p>
+            <a class="navbar-brand col-2" href="{{ path('mainpage') }}">Мир инструмента</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Переключатель навигации">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <form id="searchForm" class="d-flex col-6" role="search">
+                    <input id="searchInput" class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
+                    <p id="searchError">Товар не найден</p>
+                </form>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+                    {% if login is not empty %}
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ login }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ path('check') }}">Профиль</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_logout') }}">Выход</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a class="nav-link active" href="{{ path('vhod') }}">Профиль</a>
+                    {% endif %}
+
+                    <li class="nav-item col-10">
+                        <a class="nav-link active" href="{{ path('basket') }}">Корзина
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
+                                <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                            </svg>
+                            <span id="cartItemCount"></span>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ path('check') }}">Профиль</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Выход</a></li>
-                        </ul>
-                    </div>
-                {% else %}
-                    <a class="nav-link active" href="{{ path('vhod') }}">Профиль</a>
-                {% endif %}
-
-                <li class="nav-item col-10">
-                    <a class="nav-link active" href="{{ path('basket') }}">Корзина
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
-                            <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
-                        </svg>
-                        <span id="cartItemCount"></span>
-                    </a>
-                </li>
-
-            </ul>
-
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 {% endblock %}
 
 {% block nav %}
-<div>
-    <ul class="nav justify-content-center">
-        <li class="nav-item">
-            <a class="nav-link "  href="#katalog">Каталог</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#popular">Популярные товары</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#popBrend">Популярные бренды</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('infopage') }}">О компании</a>
-        </li>
-
-    </ul>
-</div>
+    <div>
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link "  href="#katalog">Каталог</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#popular">Популярные товары</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#popBrend">Популярные бренды</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('infopage') }}">О компании</a>
+            </li>
+        </ul>
+    </div>
 {% endblock %}
-</body>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var searchForm = document.getElementById('searchForm');
+        var searchError = document.getElementById('searchError');
+
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
+            var found = false;
+
+            switch (searchInput) {
+                case "бетономешалка":
+                    window.location.href = "{{ path('product', {name:'Бетономешалка',typeId: 1 }) }}";
+                    found = true;
+                    break;
+                case "электропила":
+                    window.location.href = "{{ path('product', {name:'Электопила', typeId: 2 }) }}";
+                    found = true;
+                    break;
+                case "косы":
+                case "триммеры":
+                    window.location.href = "{{ path('product', {name:'Косы%20и%20триммеры', typeId: 3 }) }}";
+                    found = true;
+                    break;
+                case "мойка":
+                    window.location.href = "{{ path('product', {name:'Мойка', typeId: 4 }) }}";
+                    found = true;
+                    break;
+                case "мотоблок":
+                    window.location.href = "{{ path('product', {name:'Мотоблок', typeId: 5 }) }}";
+                    found = true;
+                    break;
+                case "сварка":
+                    window.location.href = "{{ path('product', {name:'Сварка', typeId: 6 }) }}";
+                    found = true;
+                    break;
+                default:
+                    break;
+            }
+
+            if (!found) {
+                searchError.style.display = 'block';
+            } else {
+                searchError.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+</body>
 </html>

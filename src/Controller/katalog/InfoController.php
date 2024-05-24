@@ -28,6 +28,9 @@ class InfoController extends AbstractController
         $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
         $similarProducts = [];
 
+        $infoProd = $entityManager->getRepository(InfoProduct::class)->findBy([], ['sale' => 'DESC'], 4);
+
+
         foreach ($products as $similarProduct) {
             if ($similarProduct->getId() != $id) {
                 $similarProducts[] = $similarProduct;
@@ -38,6 +41,7 @@ class InfoController extends AbstractController
             'login' => $login,
             'product' => $product,
             'images' => $images,
+            'infoProd' => $infoProd,
             'infoProduct' => $infoProduct,
             'products' => $similarProducts
         ]);
