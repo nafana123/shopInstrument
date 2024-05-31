@@ -103,8 +103,7 @@
 
             .status-confirmed::after {
                 content: "Ваш заказ ожидает вас в магазине Мир инструмента";
-             }
-
+            }
 
             .status-confirmed::after {
                 position: absolute;
@@ -134,8 +133,19 @@
             .navbar-brand:hover{
                 font-size: 22px;
             }
-
-
+            .download-link {
+                display: inline-flex;
+                align-items: center;
+                color: #007bff;
+                text-decoration: none;
+                font-weight: bold;
+            }
+            .download-link svg {
+                margin-right: 5px;
+            }
+            .download-link:hover {
+                text-decoration: underline;
+            }
         </style>
     {% endblock %}
 </head>
@@ -147,31 +157,37 @@
             <div class="avatar">{{ user.login|slice(0, 1) }}</div>
             <h1>Имя: {{ user.login }}</h1>
             <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
-            </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                </svg>
             </button>
             <h1>Почта: {{ user.email }}</h1>
             <h1 style="margin-left: 300px;">Дата регистрации: {{ user.data }}</h1>
 
         </div>
+
         <div class="order-history">
             <div class="inf">
-            <h1>История заказов</h1>
+                <h1>История заказов</h1>
             </div>
             {% set currentOrderNumber = null %}
             {% for check in checks|reverse %}
+            <a href="{{ path('download_pdf', {'orderId': check.orderNumber}) }}" class="download-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filetype-pdf" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM1.6 11.85H0v3.999h.791v-1.342h.803c.287 0 .531-.057.732-.173.203-.117.358-.275.463-.474a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.476-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.38.574.574 0 0 1-.238.241.794.794 0 0 1-.375.082H.788V12.48h.66c.218 0 .389.06.512.181.123.122.185.296.185.522Zm1.217-1.333v3.999h1.46c.401 0 .734-.08.998-.237a1.45 1.45 0 0 0 .595-.689c.13-.3.196-.662.196-1.084 0-.42-.065-.778-.196-1.075a1.426 1.426 0 0 0-.589-.68c-.264-.156-.599-.234-1.005-.234H3.362Zm.791.645h.563c.248 0 .45.05.609.152a.89.89 0 0 1 .354.454c.079.201.118.452.118.753a2.3 2.3 0 0 1-.068.592 1.14 1.14 0 0 1-.196.422.8.8 0 0 1-.334.252 1.298 1.298 0 0 1-.483.082h-.563v-2.707Zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638H7.896Z"/>
+                </svg>
+                Скачать PDF
+            </a>
             {% if check.orderNumber != currentOrderNumber %}
             {% if currentOrderNumber is not null %}
             {% endif %}
             <h2>
                 <span>Заказ №<span class="order-number">{{ check.orderNumber }}</span> ({{ check.data}})</span>
-
                 {% if check.status == 4 %}
                     <span style="color: #FFA500; font-size: 20px">Статус: В обработке</span>
                 {% endif %}
                 {% if check.status == 2 %}
-                    <span style="color: #007BFF; font-size: 20px">Статус: Ожидае в пункте выдачи</span>
+                    <span style="color: #007BFF; font-size: 20px">Статус: Ожидает в пункте выдачи</span>
                 {% endif %}
                 {% if check.status == 8 %}
                     <span style="color: #DC3545; font-size: 20px">Статус: Отклонён</span>
@@ -179,19 +195,8 @@
                 {% if check.status == 5 %}
                     <span style="color: #28A745; font-size: 20px">Статус: Оплачен</span>
                 {% endif %}
-
             </h2>
             <h3>Итоговая цена: {{ check.ItogPrice }} руб.</h3>
-            {% if check.status == 2 %}
-
-            <a class="navbar-brand col-2"  href="{{ path('infopage') }}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
-                    <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-                </svg>
-                Пункт выдачи: Магазин мир инструмента
-            </a>
-            {% endif %}
-
             <ul class="order-list">
                 {% set currentOrderNumber = check.orderNumber %}
                 {% endif %}

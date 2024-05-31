@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказ №{{ check[0].orderNumber }}</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<h1>Заказ №{{ check[0].orderNumber }}</h1>
+<p>Пользователь: {{ user.login }}</p>
+<p>Дата заказа: {{ check[0].dateCreated|date('d-m-Y') }}</p>
+
+<table>
+    <thead>
+    <tr>
+        <th>Название товара</th>
+        <th>Количество</th>
+        <th>Цена</th>
+        <th>Итоговая цена</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in check %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.count }}</td>
+            <td>{{ item.finalPrice }}</td>
+            <td>{{ item.finalPrice * item.count }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="3" style="text-align: right;"><strong>Итоговая цена:</strong></td>
+        <td><strong>{{ totalPrice }}</strong></td>
+    </tr>
+    </tfoot>
+</table>
+
+</body>
+</html>

@@ -7,8 +7,11 @@ use App\Entity\InfoProduct;
 use App\Repository\UsersRepository;
 use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CheckPageController extends AbstractController
@@ -87,6 +90,50 @@ class CheckPageController extends AbstractController
         ]);
 
         $response->headers->clearCookie('cart');
+
+        return $response;
+    }
+    /**
+     * @Route("/download-pdf/{orderId}", name="download_pdf")
+     */
+    public function generatePdfResponse(Request $request, int $orderId): Response
+    {
+        $login = $this->getUserLogin($request);
+        $user = $this->usersRepository->findOneBy(['login' => $login]);
+
+        $checks = $this->entityManager->getRepository(Checks::class)->findBy(['id_user' => $user->getId(), 'order_number' => $orderId]);
+
+        if (count($checks) === 0) {
+            return new Response('Заказ не найден', Response::HTTP_NOT_FOUND);
+        }
+
+        // Рассчитываем итоговую цену заказа
+        $totalPrice = 0;
+        foreach ($checks as $check) {
+            $totalPrice += $check->getFinalPrice() * $check->getCount();
+        }
+
+        $options = new Options();
+        $options->set('defaultFont', 'DejaVu Sans');
+        $dompdf = new Dompdf($options);
+
+        $html = $this->renderView('checkPagePdf.html.twig', [
+            'user' => $user,
+            'check' => $checks,
+            'totalPrice' => $totalPrice, // Передаем общую стоимость в шаблон
+        ]);
+
+        $dompdf->loadHtml($html);
+
+        $dompdf->setPaper('A4', 'portrait');
+
+        $dompdf->render();
+
+        $pdfOutput = $dompdf->output();
+
+        $response = new Response($pdfOutput);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="order_'.$orderId.'.pdf"');
 
         return $response;
     }
