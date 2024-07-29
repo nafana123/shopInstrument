@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Repository\UsersRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-class Users
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -25,6 +27,9 @@ class Users
     #[ORM\Column(length: 255)]
     private ?string $data = null;
 
+    #[ORM\Column(length: 255, type: 'json')]
+    private array $roles = ['ROLE_USER']; // Default role
+
     public function getId(): ?int
     {
         return $this->id;
@@ -38,7 +43,6 @@ class Users
     public function setLogin(string $login): static
     {
         $this->login = $login;
-
         return $this;
     }
 
@@ -50,7 +54,6 @@ class Users
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -62,7 +65,6 @@ class Users
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -75,5 +77,32 @@ class Users
     {
         $this->data = $data;
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        // Return roles
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null; // Not needed if using bcrypt or argon2i
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email; // or use login as identifier if preferred
+    }
+
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
     }
 }

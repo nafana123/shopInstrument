@@ -1,0 +1,41 @@
+# config/packages/security.yaml
+security:
+    # Настройка хеширования паролей
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # Настройка провайдеров пользователей
+    providers:
+        database_users:
+            entity:
+                class: App\Entity\Users
+                property: email
+
+    # Настройка фаерволов
+    firewalls:
+        # Безопасность для ресурсов разработки
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Основной фаервол
+        main:
+            lazy: true
+            provider: database_users
+            form_login:
+                login_path: login  # Страница логина
+                check_path: login  # Путь для проверки логина
+                username_parameter: email  # Параметр для логина
+                password_parameter: password  # Параметр для пароля
+            logout:
+                path: /logout
+                target: /
+
+    # Контроль доступа
+    access_control:
+        # Открытый доступ ко всем страницам, кроме защищенных
+#        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/registration, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # Защищенные страницы требуют аутентификации
+#        - { path: ^/admin, roles: ROLE_ADMIN }
+#        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

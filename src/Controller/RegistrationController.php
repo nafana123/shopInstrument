@@ -3,24 +3,26 @@
 namespace App\Controller;
 
 use App\Entity\Users;
-use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class RegistrationController extends AbstractController
 {
     private EntityManagerInterface $em;
+    private UserPasswordHasherInterface $passwordHasher;
+    private TokenStorageInterface $tokenStorage;
 
-    private CookieService $cookieService;
-
-    public function __construct(EntityManagerInterface $em, CookieService $cookieService)
+    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, TokenStorageInterface $tokenStorage)
     {
         $this->em = $em;
-        $this->cookieService = $cookieService;
-
+        $this->passwordHasher = $passwordHasher;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -28,43 +30,49 @@ class RegistrationController extends AbstractController
      */
     public function registration(Request $request): Response
     {
+        $errors = [];
         if ($request->isMethod('POST')) {
             $login = $request->request->get('login');
             $email = $request->request->get('email');
             $password = $request->request->get('password');
 
-            $existingUser = $this->em->getRepository(Users::class)->findOneBy(['email' => $email]);
-            if ($existingUser !== null) {
-                return $this->render('registration.html.twig', [
-                    'error' => 'Данная почта уже зарегистрирована',
-                ]);
-            }
 
-            if ($login !== null && $email !== null && $password !== null) {
-                $user = new Users();
-                $user->setLogin($login);
-                $user->setEmail($email);
-                $user->setPassword($password);
-                $registrationDate = new \DateTime();
-                $user->setData($registrationDate->format('d-m-Y'));
+                $existingUser = $this->em->getRepository(Users::class)->findOneBy(['email' => $email]);
+                if ($existingUser) {
+                    return $this->render('registration.html.twig', [
+                        'error' => 'Данная почта уже зарегистрирована',
+                    ]);
+                }
+                else {
+                    $user = new Users();
+                    $user->setLogin($login);
+                    $user->setEmail($email);
+                    $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
+                    $user->setPassword($hashedPassword);
+                    $registrationDate = new \DateTime();
+                    $user->setData($registrationDate->format('d-m-Y'));
+                    $this->em->persist($user);
+                    $this->em->flush();
 
-                $this->em->persist($user);
-                $this->em->flush();
+                    $token = new UsernamePasswordToken($user, $hashedPassword,  $user->getRoles());
+                    $this->tokenStorage->setToken($token);
+                    $request->getSession()->set('_security_main', serialize($token));
 
-                $response = $this->redirectToRoute('registration_success', ['login' => $login]);
-                $response = $this->cookieService->setUserCookie($response, 'user_login', $login);
-                return $response;
-            }
+                    return $this->redirectToRoute('registration_success');
+                }
         }
 
-        return $this->render('registration.html.twig');
+        return $this->render('registration.html.twig', [
+            'errors' => $errors,
+        ]);
     }
 
     /**
-     * @Route("/", name="registration_success")
+     * @Route("/registration-success", name="registration_success")
      */
-    public function registrationSuccess(string $login): Response
+    public function registrationSuccess(Request $request): Response
     {
+        $login = $request->query->get('login');
         return $this->render('base.html.twig', ['login' => $login]);
     }
 }

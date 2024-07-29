@@ -2,24 +2,27 @@
 
 namespace App\Controller;
 
-use App\Entity\Users;
-use App\Services\CookieService;
-use Doctrine\ORM\EntityManagerInterface;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class vhodController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
+    private UserPasswordHasherInterface $passwordHasher;
+    private UserProviderInterface $userProvider;
+    private TokenStorageInterface $tokenStorage;
 
-    private CookieService $cookieService;
-
-    public function __construct(EntityManagerInterface $entityManager, CookieService $cookieService)
+    public function __construct(UserPasswordHasherInterface $passwordHasher, UserProviderInterface $userProvider, TokenStorageInterface $tokenStorage)
     {
-        $this->entityManager = $entityManager;
-        $this->cookieService = $cookieService;
+        $this->passwordHasher = $passwordHasher;
+        $this->userProvider = $userProvider;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -27,39 +30,27 @@ class vhodController extends AbstractController
      */
     public function login(Request $request): Response
     {
+
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
             $password = $request->request->get('password');
 
-            $userRepository = $this->entityManager->getRepository(Users::class);
 
-            $user = $userRepository->findOneBy(['email' => $email, 'password' => $password]);
+                $user = $this->userProvider->loadUserByIdentifier($email);
 
-            if ($user !== null) {
-                if($user->getLogin() === 'admin' && $user->getPassword() === $password){
-                    $login = $user->getLogin();
-                    $response = $this->redirectToRoute('admin', ['login' => $login]);
-                    return $response;
+                if ($user && $this->passwordHasher->isPasswordValid($user, $password)) {
+                    $token = new UsernamePasswordToken($user, $password,  $user->getRoles());
+                    $this->tokenStorage->setToken($token);
+                    $request->getSession()->set('_security_main', serialize($token));
 
+                    return $this->redirectToRoute('mainpage');
+                } else {
+                    return $this->render('vhod.html.twig', [
+                        'error' => 'Неверная почта или пароль'
+                    ]);
                 }
-                $login = $user->getLogin();
-                $response = $this->redirectToRoute('registration_success', ['login' => $login]);
-                $response = $this->cookieService->setUserCookie($response, 'user_login', $login);
-                return $response;
-            } else {
-                return $this->render('vhod.html.twig', [
-                    'error' => 'Неверная почта или пароль'
-                ]);
-            }
         }
-        return $this->render('vhod.html.twig');
 
-    }
-    /**
-     * @Route("/", name="registration_success")
-     */
-    public function registrationSuccess(string $login): Response
-    {
-        return $this->render('base.html.twig', ['login' => $login]);
+        return $this->render('vhod.html.twig');
     }
 }

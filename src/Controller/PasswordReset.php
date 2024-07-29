@@ -8,15 +8,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class PasswordReset extends AbstractController
 {
     private EntityManagerInterface $entityManager;
+    private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher)
     {
         $this->entityManager = $entityManager;
+        $this->passwordHasher = $passwordHasher;
     }
+
     /**
      * @Route("/registration/password-reset", name="password_reset", methods={"GET","POST"})
      */
@@ -36,7 +40,8 @@ class PasswordReset extends AbstractController
             $user = $userRepository->findOneBy(['email' => $email]);
 
             if ($user !== null) {
-                $user->setPassword($password);
+                $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
+                $user->setPassword($hashedPassword);
                 $this->entityManager->flush();
 
                 return $this->render('vhod.html.twig',[
@@ -51,5 +56,4 @@ class PasswordReset extends AbstractController
 
         return $this->render('passwordReset.html.twig');
     }
-
 }

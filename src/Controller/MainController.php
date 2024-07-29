@@ -23,7 +23,6 @@ class MainController extends AbstractController
         $login = $this->getUserLogin($request, $cookieService);
         $types = $entityManager->getRepository(Type::class)->findAll();
         $imgs = $entityManager->getRepository(PopularBrend::class)->findAll();
-
         $infoProduct = $entityManager->getRepository(InfoProduct::class)->findBy([], ['sale' => 'DESC'], 4);
 
         return $this->render('base.html.twig', [
