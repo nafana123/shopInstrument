@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Checks;
 use App\Entity\InfoProduct;
+use App\Entity\Users;
 use App\Repository\UsersRepository;
 use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,18 +14,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class CheckPageController extends AbstractController
 {
     private UsersRepository $usersRepository;
     private EntityManagerInterface $entityManager;
-    private CookieService $cookieService;
 
-    public function __construct(UsersRepository $usersRepository, EntityManagerInterface $entityManager, CookieService $cookieService)
+
+    public function __construct(UsersRepository $usersRepository,
+                                EntityManagerInterface $entityManager,
+
+    )
     {
         $this->usersRepository = $usersRepository;
         $this->entityManager = $entityManager;
-        $this->cookieService = $cookieService;
+
+
+
     }
 
     /**
@@ -32,9 +40,7 @@ class CheckPageController extends AbstractController
      */
     public function index(Request $request)
     {
-        $login = $this->getUserLogin($request);
-
-        $user = $this->usersRepository->findOneBy(['login' => $login]);
+        $user = $this->getUser();
 
         $infoProductRepository = $this->entityManager->getRepository(InfoProduct::class);
         $cookieValue = $request->cookies->get('cart');
@@ -83,7 +89,7 @@ class CheckPageController extends AbstractController
 
 
         $response = $this->render('checkPage.html.twig', [
-            'login' => $login,
+            'login' => $user->getLogin(),
             'user' => $user,
             'checks' => $checks,
             'totalPrice' => $totalPrice,
@@ -98,8 +104,7 @@ class CheckPageController extends AbstractController
      */
     public function generatePdfResponse(Request $request, int $orderId): Response
     {
-        $login = $this->getUserLogin($request);
-        $user = $this->usersRepository->findOneBy(['login' => $login]);
+        $user = $this->getUser();
 
         $checks = $this->entityManager->getRepository(Checks::class)->findBy(['id_user' => $user->getId(), 'order_number' => $orderId]);
 
@@ -107,7 +112,6 @@ class CheckPageController extends AbstractController
             return new Response('Заказ не найден', Response::HTTP_NOT_FOUND);
         }
 
-        // Рассчитываем итоговую цену заказа
         $totalPrice = 0;
         foreach ($checks as $check) {
             $totalPrice += $check->getFinalPrice() * $check->getCount();
@@ -120,7 +124,7 @@ class CheckPageController extends AbstractController
         $html = $this->renderView('checkPagePdf.html.twig', [
             'user' => $user,
             'check' => $checks,
-            'totalPrice' => $totalPrice, // Передаем общую стоимость в шаблон
+            'totalPrice' => $totalPrice,
         ]);
 
         $dompdf->loadHtml($html);
@@ -138,9 +142,23 @@ class CheckPageController extends AbstractController
         return $response;
     }
 
-
-    private function getUserLogin(Request $request)
+    /**
+     * @Route("/update-user-name", name="update_user_name", methods={"POST"})
+     */
+    public function updateUserName(Request $request): Response
     {
-        return $this->cookieService->getUserFromCookie($request, 'user_login');
+        $newName = $request->request->get('newName');
+
+        if (!$this->getUser() instanceof UserInterface) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $user = $this->getUser();
+        $user->setLogin($newName);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('check');
     }
 }

@@ -20,21 +20,15 @@ class MainController extends AbstractController
      */
     public function mainpage(Request $request, CookieService $cookieService, EntityManagerInterface $entityManager): Response
     {
-        $login = $this->getUserLogin($request, $cookieService);
         $types = $entityManager->getRepository(Type::class)->findAll();
         $imgs = $entityManager->getRepository(PopularBrend::class)->findAll();
         $infoProduct = $entityManager->getRepository(InfoProduct::class)->findBy([], ['sale' => 'DESC'], 4);
 
         return $this->render('base.html.twig', [
-            'login' => $login,
             'types' => $types,
             'infoProduct' => $infoProduct,
             'imgs' => $imgs,
         ]);
     }
 
-    private function getUserLogin(Request $request, CookieService $cookieService)
-    {
-        return $cookieService->getUserFromCookie($request, 'user_login');
-    }
 }

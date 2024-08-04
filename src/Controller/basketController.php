@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\InfoProduct;
-use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,10 +13,8 @@ class basketController extends AbstractController
     /**
      * @Route("/basket", name="basket", methods={"GET", "POST"})
      */
-    public function list(Request $request, EntityManagerInterface $entityManager, CookieService $cookieService)
+    public function list(Request $request, EntityManagerInterface $entityManager)
     {
-        $login = $this->getUserLogin($request, $cookieService);
-
 
         $infoProduct = $entityManager->getRepository(InfoProduct::class);
             $cookieValue = $request->cookies->get('cart');
@@ -43,15 +40,7 @@ class basketController extends AbstractController
             }
 
             return $this->render('basket.html.twig', [
-                'login' => $login,
                 'cartItems' => $cartItems ?? null,
             ]);
         }
-
-    private function getUserLogin(Request $request, CookieService $cookieService)
-    {
-        return $cookieService->getUserFromCookie($request, 'user_login');
-    }
-
-
 }

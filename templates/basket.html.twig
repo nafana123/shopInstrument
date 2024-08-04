@@ -11,6 +11,7 @@
     <style>
         td {
             font-size: 17px;
+            align-content: center;
         }
     </style>
 </head>
@@ -79,7 +80,7 @@
                         </p>
                     </a>
                 </div>
-                {% if login is not empty %}
+                {% if app.user.login is not empty %}
                     <a href="#" class="btn btn-success mt-2" style="width: 100%; height: 50px;" onclick="openModal()">Оформить заказ</a>
 
                 {% else %}

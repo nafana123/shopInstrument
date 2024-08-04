@@ -5,10 +5,8 @@ namespace App\Controller\katalog;
 use App\Entity\Images;
 use App\Entity\InfoProduct;
 use App\Entity\Product;
-use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class InfoController extends AbstractController
@@ -16,9 +14,8 @@ class InfoController extends AbstractController
     /**
  * @Route("/{typeId}/{name}/{id}", name="info_product")
  */
-    public function mainpage($typeId, $id, Request $request, CookieService $cookieService, EntityManagerInterface $entityManager)
+    public function mainpage($typeId, $id, EntityManagerInterface $entityManager)
     {
-        $login = $this->getUserLogin($request, $cookieService);
 
         $product = $entityManager->getRepository(Product::class)->findOneBy(['types' => $typeId, 'id' => $id]);
 
@@ -38,17 +35,11 @@ class InfoController extends AbstractController
         }
 
         return $this->render('katalog/infoProduct.html.twig', [
-            'login' => $login,
             'product' => $product,
             'images' => $images,
             'infoProd' => $infoProd,
             'infoProduct' => $infoProduct,
             'products' => $similarProducts
         ]);
-    }
-
-    private function getUserLogin(Request $request, CookieService $cookieService)
-    {
-        return $cookieService->getUserFromCookie($request, 'user_login');
     }
 }
