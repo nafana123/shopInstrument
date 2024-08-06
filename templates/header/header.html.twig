@@ -13,16 +13,6 @@
             font-size: 14px;
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCartItemCount();
-        });
-
-        function updateCartItemCount() {
-            var cartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
-            document.getElementById('cartItemCount').textContent = cartItems ? cartItems.split(',').length : 0;
-        }
-    </script>
 </head>
 
 <body>

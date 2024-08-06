@@ -33,16 +33,16 @@
                             <th>Действия</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="cartItemsTableBody">
                         {% for cartItem in cartItems %}
-                            <tr>
-                                <td><img src="{{ asset('picture/product/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" style="max-width: 100px;"></td>
+                            <tr data-id="{{ cartItem.id }}">
+                                <td><img src="{{ asset('picture/katalog/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" style="max-width: 100px;"></td>
                                 <td>{{ cartItem.name }}</td>
                                 <td>{{ cartItem.price }} руб.</td>
                                 <td>
-                                    <button class="btn btn-sm"  style="opacity: 1;font-size: 20px">-</button>
+                                    <button class="btn btn-sm btn-decrement" data-id="{{ cartItem.id }}" style="opacity: 1;font-size: 20px">-</button>
                                     <span id="quantity_{{ cartItem.id }}">{{ cartItem.quantity }}</span>
-                                    <button class="btn btn-sm"  style="opacity: 1; font-size: 20px">+</button>
+                                    <button class="btn btn-sm btn-increment" data-id="{{ cartItem.id }}" style="opacity: 1; font-size: 20px">+</button>
                                 </td>
                                 <td id="total_{{ cartItem.id }}" data-price="{{ cartItem.price }}">{{ cartItem.price * cartItem.quantity }} руб.</td>
                                 <td>
@@ -52,7 +52,6 @@
                                         </svg>
                                     </button>
                                 </td>
-
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -82,8 +81,7 @@
                     </a>
                 </div>
                 {% if app.user.login is not empty %}
-                    <a href="#" class="btn btn-success mt-2" style="width: 100%; height: 50px;" onclick="openModal()">Оформить заказ</a>
-
+                    <a href="#" class="btn btn-success mt-2" style="width: 100%; height: 50px;" data-bs-toggle="modal" data-bs-target="#exampleModal">Оформить заказ</a>
                 {% else %}
                     <a href="#" class="btn btn-success mt-2" style="width: 100%; height: 60px;">Вы не можете оформить заказ пока вы не авторизованны</a>
                     <div class="aa" style="text-align: center">
@@ -94,8 +92,6 @@
         {% endif %}
     </div>
 </div>
-
-
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: -80px">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -113,7 +109,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <table class="table">
+                            <table class="table" id="modalTable">
                                 <thead>
                                 <tr>
                                     <th>Изображение</th>
@@ -123,10 +119,10 @@
                                     <th>Сумма</th>
                                 </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="modalCartItemsTableBody">
                                 {% for cartItem in cartItems %}
-                                    <tr>
-                                        <td><img src="{{ asset('picture/product/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" style="max-width: 100px;"></td>
+                                    <tr data-id="{{ cartItem.id }}">
+                                        <td><img src="{{ asset('picture/katalog/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" style="max-width: 100px;"></td>
                                         <td>{{ cartItem.name }}</td>
                                         <td>{{ cartItem.price }} руб.</td>
                                         <td>{{ cartItem.quantity }}</td>
@@ -137,27 +133,40 @@
                             </table>
                         </div>
                     </div>
-                    <div class="row mt-4">
-                        <div class="col">
-                            <p class="fw-bold text-end" style="font-size: 20px">Итого: <span id="modalTotalPrice">0 руб.</span></p>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="modal-footer" style="justify-content: center;">
                 <a href="{{ path('check') }}" class="btn btn-success" style="width: 430px; height: 50px">Подтвердить заказ</a>
             </div>
-
         </div>
     </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('.delete-cart-item').on('click', function() {
+        function updateTotalPrice() {
+            let totalPrice = 0;
+            $('td[id^="total_"]').each(function() {
+                totalPrice += parseFloat($(this).text());
+            });
+            $('#totalPrice').text(totalPrice + ' руб.');
+            $('#modalTotalPrice').text(totalPrice + ' руб.');
+        }
+
+        function updateModalContent() {
+            var modalBody = $('#exampleModal .modal-body');
+            var tableBody = modalBody.find('#modalCartItemsTableBody');
+            tableBody.empty();
+
+            $('#cartItemsTableBody tr').each(function() {
+                var row = $(this).clone();
+                tableBody.append(row);
+            });
+        }
+
+        $(document).on('click', '.delete-cart-item', function() {
             var button = $(this);
             var itemId = button.data('id');
 
@@ -166,18 +175,63 @@
                 type: 'DELETE',
                 success: function(response) {
                     button.closest('tr').remove();
+                    updateTotalPrice();
+                    updateModalContent();
                 },
-                error: function() {
-                    alert('Произошла ошибка при удалении элемента');
-                }
             });
         });
+
+        $(document).on('click', '.btn-increment', function() {
+            var button = $(this);
+            var itemId = button.data('id');
+
+            $.ajax({
+                url: '/basket/increment/' + itemId,
+                type: 'POST',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        var quantityElement = $('#quantity_' + itemId);
+                        var priceElement = $('#total_' + itemId);
+                        var newQuantity = response.quantity;
+                        var unitPrice = parseFloat(priceElement.data('price'));
+                        quantityElement.text(newQuantity);
+                        priceElement.text((unitPrice * newQuantity) + ' руб.');
+                        updateTotalPrice();
+                        updateModalContent();
+                    }
+                },
+            });
+        });
+
+        $(document).on('click', '.btn-decrement', function() {
+            var button = $(this);
+            var itemId = button.data('id');
+
+            $.ajax({
+                url: '/basket/decrement/' + itemId,
+                type: 'POST',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        var quantityElement = $('#quantity_' + itemId);
+                        var priceElement = $('#total_' + itemId);
+                        var newQuantity = response.quantity;
+                        var unitPrice = parseFloat(priceElement.data('price'));
+                        quantityElement.text(newQuantity);
+                        priceElement.text((unitPrice * newQuantity) + ' руб.');
+                        updateTotalPrice();
+                        updateModalContent();
+                    }
+                },
+            });
+        });
+
+        updateTotalPrice();
+
+        $('#exampleModal').on('show.bs.modal', function () {
+            updateModalContent();
+        });
     });
-
-
-
 </script>
-
 
 </body>
 </html>

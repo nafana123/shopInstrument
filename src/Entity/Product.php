@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -20,7 +22,7 @@ class Product
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $amount = null;
+    private ?int $amount = null;
 
     #[ORM\Column(length: 255)]
     private ?string $noSale = null;
@@ -34,6 +36,14 @@ class Product
 
     #[ORM\Column(length: 255)]
     private ?int $deleted = 0;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Basket::class)]
+    private Collection $basket;
+
+    public function __construct()
+    {
+        $this->basket = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -65,12 +75,12 @@ class Product
         return $this;
     }
 
-    public function getAmount(): ?string
+    public function getAmount(): ?int
     {
         return $this->amount;
     }
 
-    public function setAmount(string $amount): static
+    public function setAmount(int $amount): static
     {
         $this->amount = $amount;
 

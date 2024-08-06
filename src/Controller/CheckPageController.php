@@ -2,11 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Basket;
 use App\Entity\Checks;
 use App\Entity\InfoProduct;
-use App\Entity\Users;
-use App\Repository\UsersRepository;
-use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -15,24 +13,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class CheckPageController extends AbstractController
 {
-    private UsersRepository $usersRepository;
     private EntityManagerInterface $entityManager;
 
 
-    public function __construct(UsersRepository $usersRepository,
-                                EntityManagerInterface $entityManager,
-
-    )
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->usersRepository = $usersRepository;
         $this->entityManager = $entityManager;
-
-
-
     }
 
     /**
@@ -43,23 +32,18 @@ class CheckPageController extends AbstractController
         $user = $this->getUser();
 
         $infoProductRepository = $this->entityManager->getRepository(InfoProduct::class);
-        $cookieValue = $request->cookies->get('cart');
+        $basketItems = $this->entityManager->getRepository(Basket::class)->findBy(['user' => $user]);
 
         $orderNumber = mt_rand(100000, 999999);
         $totalPrice = 0;
+        $dateTimeNow = new \DateTime();
 
-        if ($cookieValue) {
-            $cartItemsPairs = str_getcsv($cookieValue, ',');
-            $dateTimeNow = new \DateTime();
+        foreach ($basketItems as $basketItem) {
+            $quantity = $basketItem->getQuantity();
 
-            foreach ($cartItemsPairs as $pair) {
-                $item = explode(':', $pair);
-                $itemId = $item[0] ?? null;
-                $quantity = $item[1] ?? null;
+            $product = $infoProductRepository->findOneBy(['id_product' => $basketItem->getProduct()]);
 
-                $product = $infoProductRepository->findOneBy(['id_product' => $itemId]);
-
-                if ($product) {
+       if ($product) {
                     $check = new Checks();
                     $check->setIdProducts($product->getIdProduct());
                     $check->setIdUser($user->getId());
@@ -81,7 +65,6 @@ class CheckPageController extends AbstractController
                     $this->entityManager->persist($check);
                 }
             }
-        }
 
         $this->entityManager->flush();
 

@@ -13,6 +13,10 @@ class Basket
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'basket')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Product $product = null;
+
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
 
@@ -92,4 +96,17 @@ class Basket
 
         return $this;
     }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
+
+        return $this;
+    }
+
 }
