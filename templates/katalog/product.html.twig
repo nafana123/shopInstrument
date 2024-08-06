@@ -42,7 +42,11 @@
                             <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" style="font-size: 19px" class="card__title">
                                 {{ product.name }}
                             </a>
-                            <button type="button" class="btn btn-success btn-add-to-cart" style="width: 100%; margin-left: 0px"  data-product-id="{{ product.id }}" onclick="addToCart(this)">Добавить в корзину</button>
+                            <form action="{{ path('basket', { 'id': product.id }) }}" method="post">
+                                <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                            </form>
+
+
                         </div>
                     </div>
                 </article>
@@ -50,80 +54,22 @@
         {% endfor %}
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        updateCartItemCount();
-        updateCartButtonState();
+    $(document).ready(function() {
+        $('.add-to-basket').on('click', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/basket',
+                type: 'POST',
+            });
+        });
     });
 
-    function addToCart(button) {
-        var productId = button.dataset.productId;
-        var quantity = 1;
-        var cartItem = productId + ':' + quantity;
-        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
-        var updatedCart = '';
 
-        if (existingCartItems) {
-            var items = existingCartItems.split(',');
-            var found = false;
-
-            for (var i = 0; i < items.length; i++) {
-                var parts = items[i].split(':');
-                if (parts[0] === productId) {
-                    window.location.href = '{{ path("basket") }}';
-                    return;
-                }
-                updatedCart += (i > 0 ? ',' : '') + parts.join(':');
-            }
-
-            if (!found) {
-                updatedCart += ',' + cartItem;
-            }
-        } else {
-            updatedCart = cartItem;
-        }
-
-        document.cookie = 'cart=' + updatedCart + '; path=/';
-        updateCartButtonState();
-        updateCartItemCount();
-    }
-
-    function updateCartButtonState() {
-        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
-        var addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
-
-        if (existingCartItems) {
-            var items = existingCartItems.split(',');
-            addToCartButtons.forEach(function(button) {
-                var productId = button.dataset.productId;
-                var found = items.some(function(item) {
-                    return item.split(':')[0] === productId;
-                });
-                if (found) {
-                    button.classList.add('btn-added-to-cart');
-                    button.textContent = 'Товар добавлен в корзину';
-                    button.dataset.inCart = 'true';
-                } else {
-                    button.classList.remove('btn-added-to-cart');
-                    button.textContent = 'Добавить в корзину';
-                    button.dataset.inCart = 'false';
-                }
-            });
-        }
-    }
-
-    function updateCartItemCount() {
-        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
-        var itemCountElement = document.getElementById('cartItemCount');
-
-        if (existingCartItems) {
-            var items = existingCartItems.split(',');
-            itemCountElement.textContent = items.length;
-        } else {
-            itemCountElement.textContent = 0;
-        }
-    }
 </script>
+
 </body>
 </html>
 

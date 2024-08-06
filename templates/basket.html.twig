@@ -40,18 +40,19 @@
                                 <td>{{ cartItem.name }}</td>
                                 <td>{{ cartItem.price }} руб.</td>
                                 <td>
-                                    <button class="btn btn-sm" onclick="changeQuantity('{{ cartItem.id }}', -1)" style="opacity: 1;font-size: 20px">-</button>
+                                    <button class="btn btn-sm"  style="opacity: 1;font-size: 20px">-</button>
                                     <span id="quantity_{{ cartItem.id }}">{{ cartItem.quantity }}</span>
-                                    <button class="btn btn-sm" onclick="changeQuantity('{{ cartItem.id }}', 1)" style="opacity: 1; font-size: 20px">+</button>
+                                    <button class="btn btn-sm"  style="opacity: 1; font-size: 20px">+</button>
                                 </td>
                                 <td id="total_{{ cartItem.id }}" data-price="{{ cartItem.price }}">{{ cartItem.price * cartItem.quantity }} руб.</td>
                                 <td>
-                                    <button class="btn delete-cart-item" style="color: red" data-product-id="{{ cartItem.id }}">
+                                    <button class="btn delete-cart-item" data-id="{{ cartItem.id }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                             <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
                                         </svg>
                                     </button>
                                 </td>
+
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -152,119 +153,31 @@
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    function openModal() {
-        $('#exampleModal').modal('show');
-    }
-
-    function updateModalTotalPrice() {
-        let totalPrice = 0;
-        const totalElements = document.querySelectorAll('[id^="total_"]');
-        totalElements.forEach(function(element) {
-            const total = parseFloat(element.innerText);
-            totalPrice += total;
-        });
-        $('#modalTotalPrice').text(totalPrice.toFixed() + ' руб.');
-    }
-
     $(document).ready(function() {
-        $('#exampleModal').on('show.bs.modal', function() {
-            updateModalTotalPrice();
-        });
-    });
+        $('.delete-cart-item').on('click', function() {
+            var button = $(this);
+            var itemId = button.data('id');
 
-    function changeQuantity(productId, delta) {
-        var quantitySpan = $('#quantity_' + productId);
-        var totalTd = $('#total_' + productId);
-        var quantity = parseInt(quantitySpan.text());
-        if (isNaN(quantity)) {
-            quantity = 1;
-        }
-        quantity += delta;
-        if (quantity < 1) return;
-        quantitySpan.text(quantity);
-        var price = parseFloat(totalTd.data('price'));
-        if (isNaN(price)) {
-            price = 0;
-        }
-        totalTd.text((price * quantity).toFixed() + ' руб.');
-        updateTotalPrice();
-        saveToLocalStorage(productId, quantity);
-        updateCookie(productId, quantity);
-    }
-
-    function updateCookie(productId, quantity) {
-        var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-        var cartItems = cookieValue.split(',');
-        var index = cartItems.findIndex(item => item.split(':')[0] === productId.toString());
-        if (index !== -1) {
-            cartItems[index] = productId + ':' + quantity;
-        }
-        document.cookie = 'cart=' + cartItems.join(',') + '; path=/';
-    }
-
-    function saveToLocalStorage(productId, quantity) {
-        var cart = JSON.parse(localStorage.getItem('cart')) || {};
-        cart[productId] = quantity;
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }
-
-    function updateTotalPrice() {
-        let totalPrice = 0;
-        const totalElements = document.querySelectorAll('[id^="total_"]');
-        totalElements.forEach(function(element) {
-            const total = parseFloat(element.innerText);
-            console.log(total)
-            totalPrice += total;
-        });
-
-        document.getElementById("totalPrice").innerText = totalPrice.toFixed(2) + " руб.";
-    }
-
-
-    $(document).ready(function() {
-        $('.delete-cart-item').click(function() {
-            var productId = $(this).data('product-id');
-            removeFromCart(productId);
-        });
-        loadFromLocalStorage();
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        const deleteButtons = document.querySelectorAll('.delete-cart-item');
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = button.dataset.productId;
-                removeFromCart(productId);
+            $.ajax({
+                url: '/basket/delete/' + itemId,
+                type: 'DELETE',
+                success: function(response) {
+                    button.closest('tr').remove();
+                },
+                error: function() {
+                    alert('Произошла ошибка при удалении элемента');
+                }
             });
         });
     });
-    function removeFromCart(productId) {
-        var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-        var cartItems = cookieValue.split(',');
-        console.log(cartItems);
-        var index = cartItems.findIndex(item => item.split(':')[0] === productId);
-        if (index !== -1) {
-            cartItems.splice(index, 1);
-        }
-        document.cookie = 'cart=' + cartItems.join(',') + '; path=/';
-        location.reload();
-    }
 
-    function loadFromLocalStorage() {
-        var cart = JSON.parse(localStorage.getItem('cart')) || {};
-        for (var productId in cart) {
-            var quantity = cart[productId];
-            var quantitySpan = $('#quantity_' + productId);
-            if (quantitySpan.length > 0) {
-                quantitySpan.text(quantity);
-            }
-            changeQuantity(productId, 0);
-        }
-    }
 
-    updateTotalPrice();
+
 </script>
+
+
 </body>
 </html>

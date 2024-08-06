@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UsersRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -29,6 +31,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, type: 'json')]
     private array $roles = ['ROLE_USER'];
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Basket::class)]
+    private Collection $basket;
+
+    public function __construct()
+    {
+        $this->basket = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -93,16 +103,16 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getSalt(): ?string
     {
-        return null; // Not needed if using bcrypt or argon2i
+        return null;
     }
 
     public function getUserIdentifier(): string
     {
-        return $this->email; // or use login as identifier if preferred
+        return $this->email;
     }
 
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
+
     }
 }
