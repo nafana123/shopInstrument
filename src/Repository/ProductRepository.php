@@ -21,28 +21,33 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-//    /**
-//     * @return Product[] Returns an array of Product objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findAllSearchName($searchName, $typeId, $priceFrom, $priceTo)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->where('p.types = :typeId')
+            ->setParameter('typeId', $typeId);
 
-//    public function findOneBySomeField($value): ?Product
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+
+        if ($searchName !== null && $searchName !== '') {
+            $qb->andWhere('p.name LIKE :searchName')
+                ->setParameter('searchName', '%' . $searchName . '%');
+        }
+
+
+
+        if ($priceFrom !== null && $priceFrom !== '') {
+            $qb->andWhere('p.amount >= :priceFrom')
+                ->setParameter('priceFrom', $priceFrom);
+        }
+
+        if ($priceTo !== null && $priceTo !== '') {
+            $qb->andWhere('p.amount <= :priceTo')
+                ->setParameter('priceTo', $priceTo);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+
 }

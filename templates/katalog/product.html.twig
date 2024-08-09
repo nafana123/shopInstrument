@@ -8,12 +8,6 @@
     {% block stylesheets %}
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     {% endblock %}
-    <style>
-        .btn-added-to-cart {
-            background: whitesmoke;
-            color: green;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -23,35 +17,105 @@
             <li class="breadcrumb-item active" aria-current="page">Ассортимент</li>
         </ol>
     </nav>
-    <div class="row justify-content-start">
-        {% for product in products %}
-            {% if product.deleted == 0 %}
-                <article class="col-sm-6 col-md-4 col-lg-3">
-                    <div class="card">
-                        <div class="card__top">
-                            <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__image">
-                                <img src="{{ asset('picture/katalog/' ~ product.img) }}" class="card-img-top" alt="{{ product.name }}">
-                            </a>
-                            <div class="card__label">-{{ product.discont }} %</div>
-                        </div>
-                        <div class="card__bottom">
-                            <div class="card__prices">
-                                <div class="card__price card__price--discount" style="font-size: 22px">{{ product.amount }}</div>
-                                <div class="card__price card__price--common" style="font-size: 18px">{{ product.noSale }}</div>
-                            </div>
-                            <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" style="font-size: 19px" class="card__title">
-                                {{ product.name }}
-                            </a>
-                            <form action="{{ path('basket', { 'id': product.id }) }}" method="post">
-                                <button type="submit" class="btn btn-primary">Добавить в корзину</button>
-                            </form>
+    <div class="row">
+        <div class="col-md-3 filter-container">
+            {% block filter_form %}
+                <form method="get" action="{{ path('form_filteras') }}">
+                    <input type="hidden" name="typeId" value="{{ typeId }}">
 
-
+                    <div class="filter-group">
+                        <label for="search">Поиск по названию:</label>
+                        <input type="text" id="search" name="search" value="{{ app.request.query.get('search') }}">
+                    </div>
+                    <div class="filter-group">
+                        <label>Цена:</label>
+                        <div class="price-range">
+                            <input type="number" id="price-from" name="price_from" min="0" value="{{ app.request.query.get('price_from') }}" placeholder="От">
+                            <input type="number" id="price-to" name="price_to" min="0" value="{{ app.request.query.get('price_to') }}" placeholder="До">
                         </div>
                     </div>
-                </article>
-            {% endif %}
-        {% endfor %}
+                    <div class="filter-group">
+                        <label for="sort-price">Сортировка по цене:</label>
+                        <select id="sort-price" name="sort_price">
+                            <option value="">Выберите</option>
+                            <option value="asc" {% if app.request.query.get('sort_price') == 'asc' %}selected{% endif %}>По возрастанию</option>
+                            <option value="desc" {% if app.request.query.get('sort_price') == 'desc' %}selected{% endif %}>По убыванию</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Наличие:</label>
+                        <div class="availability-group">
+                            <label><input type="radio" name="availability" value="in_stock" checked> В наличии</label>
+                            <label><input type="radio" name="availability" value="out_of_stock"> Нет в наличии</label>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Скидка:</label>
+                        <div class="discount-group">
+                            <div class="discount-group__row">
+                                <label><input type="checkbox" name="discount[]" value="10" > 10%</label>
+                                <label><input type="checkbox" name="discount[]" value="15"> 15%</label>
+                            </div>
+                            <div class="discount-group__row">
+                                <label><input type="checkbox" name="discount[]" value="20" > 20%</label>
+                                <label><input type="checkbox" name="discount[]" value="25" > 25%</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Применить фильтр</button>
+                </form>
+            {% endblock %}
+        </div>
+        <div class="col-md-9" style="align-content: center">
+            {% if products is empty %}
+            <div class="no-results" style="text-align: center" >
+                <div class="alert"  style="font-size: 20px; margin-top: -80px;" role="alert">
+                    <span style="text-align: center">Ничего не найдено</span><br>
+                    Попробуйте сбросить или изменить фильтры поиска.
+
+                </div>
+                <form method="get" action="{{ path('form_filteras') }}">
+                    <input type="hidden" name="typeId" value="{{ typeId }}">
+                    <button type="submit" class="btn btn-secondary">Сбросить фильтры</button>
+                </form>
+            </div>
+            {% else %}
+            <div class="products-container">
+                    {% for product in products %}
+                        {% if product.deleted == 0 %}
+                            <div class="product-card">
+                                <article class="card">
+                                    <div class="card__top">
+                                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__image">
+                                            <img src="{{ asset('picture/katalog/' ~ product.img) }}" class="card-img-top" alt="{{ product.name }}">
+                                        </a>
+                                        <div class="card__label">-{{ product.discont }} %</div>
+                                    </div>
+                                    <div class="card__bottom">
+                                        <div class="card__prices">
+                                            <div class="card__price card__price--discount" style="font-size: 22px">{{ product.amount }}</div>
+                                            <div class="card__price card__price--common" style="font-size: 18px">{{ product.noSale }}</div>
+                                        </div>
+                                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" style="font-size: 19px" class="card__title">
+                                            {{ product.name }}
+                                        </a>
+                                        {% if app.user is not empty %}
+                                            <form action="{{ path('basket', { 'id': product.id }) }}" method="post">
+                                                <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                                            </form>
+                                        {% else %}
+                                            <div class="aa" style="text-align: center">
+                                                <a href="{{ path('vhod') }}" style="text-decoration: none;">Нужно авторизоваться, чтобы добавить товар в корзину</a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </article>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -66,11 +130,7 @@
             });
         });
     });
-
-
 </script>
-
 </body>
 </html>
-
 {% include 'footer/footer.html.twig' %}
