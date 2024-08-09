@@ -25,7 +25,7 @@
 
                     <div class="filter-group">
                         <label for="search">Поиск по названию:</label>
-                        <input type="text" id="search" name="search" value="{{ app.request.query.get('search') }}">
+                        <input type="text" id="search" name="search" placeholder="Введите название товара" value="{{ app.request.query.get('search') }}">
                     </div>
                     <div class="filter-group">
                         <label>Цена:</label>
@@ -43,27 +43,23 @@
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label>Наличие:</label>
-                        <div class="availability-group">
-                            <label><input type="radio" name="availability" value="in_stock" checked> В наличии</label>
-                            <label><input type="radio" name="availability" value="out_of_stock"> Нет в наличии</label>
-                        </div>
-                    </div>
-                    <div class="filter-group">
                         <label>Скидка:</label>
                         <div class="discount-group">
                             <div class="discount-group__row">
-                                <label><input type="checkbox" name="discount[]" value="10" > 10%</label>
-                                <label><input type="checkbox" name="discount[]" value="15"> 15%</label>
+                                <label><input type="checkbox" name="discount[]" value="10" {% if '10' in app.request.query.all['discount']|default([]) %}checked{% endif %}> 10%</label>
+                                <label><input type="checkbox" name="discount[]" value="15" {% if '15' in app.request.query.all['discount']|default([]) %}checked{% endif %}> 15%</label>
                             </div>
                             <div class="discount-group__row">
-                                <label><input type="checkbox" name="discount[]" value="20" > 20%</label>
-                                <label><input type="checkbox" name="discount[]" value="25" > 25%</label>
+                                <label><input type="checkbox" name="discount[]" value="20" {% if '20' in app.request.query.all['discount']|default([]) %}checked{% endif %}> 20%</label>
+                                <label><input type="checkbox" name="discount[]" value="25" {% if '25' in app.request.query.all['discount']|default([]) %}checked{% endif %}> 25%</label>
                             </div>
                         </div>
                     </div>
+
+
                     <button type="submit" class="btn btn-primary">Применить фильтр</button>
                 </form>
+
             {% endblock %}
         </div>
         <div class="col-md-9" style="align-content: center">

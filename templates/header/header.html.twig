@@ -4,14 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('style/header/header.css') }}">
-    <style>
-        #searchError {
-            display: none;
-            color: red;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-    </style>
+
 </head>
 
 <body>
@@ -24,10 +17,11 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <form id="searchForm" class="d-flex col-6" role="search">
-                    <input id="searchInput" class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
-                    <p id="searchError">Товар не найден</p>
+                <form method="get" action="{{ path('search') }}" id="searchForm" class="d-flex col-6" role="search">
+                    <input id="searchInput" class="form-control me-2" name="search" type="search" placeholder="Поиск" aria-label="Поиск">
+                    <div id="searchResults"></div>
                 </form>
+
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% if app.user %}
                         <div class="nav-item dropdown">
@@ -78,55 +72,63 @@
     </div>
 {% endblock %}
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var searchForm = document.getElementById('searchForm');
-        var searchError = document.getElementById('searchError');
+    $(document).ready(function() {
+        function fetchSearchResults(query) {
+            $.ajax({
+                url: '{{ path('search') }}',
+                type: 'GET',
+                data: { search: query },
+                success: function(data) {
+                    $('#searchResults').empty();
+                    if (data.length > 0) {
+                        data.forEach(function(product) {
+                            let price = product.amount;
 
-        searchForm.addEventListener('submit', function(event) {
-            event.preventDefault();
+                            $('#searchResults').append(
+                                `<div class="search-result-item">
+                    <img src="{{ asset('picture/katalog/') }}${product.img}" alt="${product.name}">
+                    <div>
+                        <h5>${product.name}</h5>
+                        <p class="price"><strong>${price} руб.</strong></p>
+                    </div>
+                </div>`
+                            );
+                        });
+                    } else {
+                        $('#searchResults').append('<div class="search-result-item">Нет результатов</div>');
+                    }
+                }
 
-            var searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
-            var found = false;
+            });
+        }
 
-            switch (searchInput) {
-                case "бетономешалка":
-                    window.location.href = "{{ path('product', {name:'Бетономешалка',typeId: 1 }) }}";
-                    found = true;
-                    break;
-                case "электропила":
-                    window.location.href = "{{ path('product', {name:'Электопила', typeId: 2 }) }}";
-                    found = true;
-                    break;
-                case "косы":
-                case "триммеры":
-                    window.location.href = "{{ path('product', {name:'Косы%20и%20триммеры', typeId: 3 }) }}";
-                    found = true;
-                    break;
-                case "мойка":
-                    window.location.href = "{{ path('product', {name:'Мойка', typeId: 4 }) }}";
-                    found = true;
-                    break;
-                case "мотоблок":
-                    window.location.href = "{{ path('product', {name:'Мотоблок', typeId: 5 }) }}";
-                    found = true;
-                    break;
-                case "сварка":
-                    window.location.href = "{{ path('product', {name:'Сварка', typeId: 6 }) }}";
-                    found = true;
-                    break;
-                default:
-                    break;
-            }
-
-            if (!found) {
-                searchError.style.display = 'block';
+        $('#searchInput').on('input', function() {
+            let query = $(this).val();
+            if (query.length > 1) {
+                $('#searchResults').show();
+                fetchSearchResults(query);
             } else {
-                searchError.style.display = 'none';
+                $('#searchResults').hide();
+            }
+        });
+
+        $('#searchInput').on('focus', function() {
+            let query = $(this).val();
+            if (query.length > 1) {
+                $('#searchResults').show();
+            }
+        });
+
+        $(document).click(function(e) {
+            if (!$(e.target).closest('#searchForm').length) {
+                $('#searchResults').hide();
             }
         });
     });
 </script>
+
 
 </body>
 </html>

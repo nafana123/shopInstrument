@@ -42,17 +42,25 @@ class ProductController extends AbstractController
      */
     public function filters(Request $request)
     {
+        $queryParams = $request->query->all();
+
         $typeId = $request->query->get('typeId');
         $searchName = $request->query->get('search');
         $priceFrom = $request->query->get('price_from');
         $priceTo = $request->query->get('price_to');
+        $sortPrice = $request->query->get('sort_price');
 
-        $products = $this->productRepository->findAllSearchName($searchName, $typeId, $priceFrom, $priceTo);
+        $discounts = isset($queryParams['discount']) ? $queryParams['discount'] : [];
 
+        $products = $this->productRepository->findAllSearchName($searchName, $typeId, $priceFrom, $priceTo, $sortPrice, $discounts);
 
         return $this->render('katalog/product.html.twig', [
             'products' => $products,
             'typeId' => $typeId,
+            'discounts' => $discounts,
         ]);
     }
+
+
+
 }

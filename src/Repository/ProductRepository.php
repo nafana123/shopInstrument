@@ -21,19 +21,16 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findAllSearchName($searchName, $typeId, $priceFrom, $priceTo)
+    public function findAllSearchName($searchName, $typeId, $priceFrom, $priceTo, $sortPrice, $discounts)
     {
         $qb = $this->createQueryBuilder('p')
             ->where('p.types = :typeId')
             ->setParameter('typeId', $typeId);
 
-
         if ($searchName !== null && $searchName !== '') {
             $qb->andWhere('p.name LIKE :searchName')
                 ->setParameter('searchName', '%' . $searchName . '%');
         }
-
-
 
         if ($priceFrom !== null && $priceFrom !== '') {
             $qb->andWhere('p.amount >= :priceFrom')
@@ -45,9 +42,30 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('priceTo', $priceTo);
         }
 
+
+
+        if ($sortPrice === 'asc') {
+            $qb->orderBy('p.amount', 'ASC');
+        } elseif ($sortPrice === 'desc') {
+            $qb->orderBy('p.amount', 'DESC');
+        }
+
+        if (!empty($discounts)) {
+            $qb->andWhere('p.discont IN (:discounts)')
+                ->setParameter('discounts', $discounts);
+        }
+
         return $qb->getQuery()->getResult();
     }
 
+    public function productSearch($productSearch){
+        $qb = $this->createQueryBuilder('p');
+        if ($productSearch !== null && $productSearch !== '') {
+            $qb->andWhere('p.name LIKE :productSearch')
+                ->setParameter('productSearch', '%' . $productSearch . '%');
+        }
+        return $qb->getQuery()->getResult();
 
+    }
 
 }

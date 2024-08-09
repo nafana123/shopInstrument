@@ -15,4 +15,81 @@ a.nav-link:hover{
 a.navbar-brand{
     cursor: default;
 }
+#searchResults {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    z-index: 1200;
+    width: 37%;
+    max-height: 400px;
+    margin-top: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    left: -170px;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+.search-result-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.search-result-item:last-child {
+    border-bottom: none;
+}
+.search-result-item img {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+.search-result-item div {
+    flex: 1;
+}
+.search-result-item h5 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+.search-result-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+.search-result-item:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+.search-result-item div {
+    flex: 1;
+}
+.search-result-item h5 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+.search-result-item p.price {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+.search-result-item p.price strong {
+    font-weight: bold;
+}
+.nosale {
+    display: block;
+    text-decoration: line-through;
+    color: #888;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.search-result-item:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
 
