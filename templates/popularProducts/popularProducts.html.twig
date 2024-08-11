@@ -17,6 +17,13 @@
         height: 200px;
         margin-left: 15px;
     }
+    .cards img{
+        width: 250px;
+        height: 200px;
+        margin-left: 15px;
+    }
+
+
 
 </style>
 <body>
@@ -24,7 +31,7 @@
     <h1 class="zag" id="popular">Популярные товары</h1>
     <div class="row justify-content-center">
         {% for infoProducts in infoProduct %}
-            <article class="col-sm-6 col-md-4 col-lg-3">
+            <article class="col-sm-5 col-md-5 col-lg-3">
                 <a href="{{ path('info_product', {'typeId': infoProducts.type, 'name': infoProducts.name, 'id': infoProducts.idProduct}) }}" class="card__image" style="text-decoration: none; color: black">
                     <div class="cards" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; transition: transform 0.3s;">
                         <img src="{{ asset('picture/product/' ~ infoProducts.img) }}" class="img-fluid" alt="{{ infoProducts.name }}">
@@ -34,88 +41,10 @@
                         </div>
                     </div>
                 </a>
-                <button type="button" class="btn btn-success btn-add-to-cart"  data-product-id="{{ infoProducts.idProduct }}" style="width: 100%; margin-top: 20px" onclick="addToCart(this)">В корзину</button>
-
             </article>
 
         {% endfor %}
     </div>
 </div>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        updateCartItemCount();
-        updateCartButtonState();
-    });
-
-    function addToCart(button) {
-        var productId = button.dataset.productId;
-        var quantity = 1;
-        var cartItem = productId + ':' + quantity;
-        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
-        var updatedCart = '';
-
-        if (existingCartItems) {
-            var items = existingCartItems.split(',');
-            var found = false;
-
-            for (var i = 0; i < items.length; i++) {
-                var parts = items[i].split(':');
-                if (parts[0] === productId) {
-                    window.location.href = '{{ path("basket") }}';
-                    return;
-                }
-                updatedCart += (i > 0 ? ',' : '') + parts.join(':');
-            }
-
-            if (!found) {
-                updatedCart += ',' + cartItem;
-            }
-        } else {
-            updatedCart = cartItem;
-        }
-
-        document.cookie = 'cart=' + updatedCart + '; path=/';
-        updateCartButtonState();
-        updateCartItemCount();
-    }
-
-    function updateCartButtonState() {
-        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
-        var addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
-
-        if (existingCartItems) {
-            var items = existingCartItems.split(',');
-            addToCartButtons.forEach(function(button) {
-                var productId = button.dataset.productId;
-                var found = items.some(function(item) {
-                    return item.split(':')[0] === productId;
-                });
-                if (found) {
-                    button.classList.add('btn-added-to-cart');
-                    button.textContent = 'Товар добавлен в корзину';
-                    button.dataset.inCart = 'true';
-                } else {
-                    button.classList.remove('btn-added-to-cart');
-                    button.textContent = 'В корзину';
-                    button.dataset.inCart = 'false';
-                }
-            });
-        }
-    }
-
-    function updateCartItemCount() {
-        var existingCartItems = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*=\s*([^;]*).*$)|^.*$/, "$1");
-        var itemCountElement = document.getElementById('cartItemCount');
-
-        if (existingCartItems) {
-            var items = existingCartItems.split(',');
-            itemCountElement.textContent = items.length;
-        } else {
-            itemCountElement.textContent = 0;
-        }
-    }
-</script>
 </body>
 </html>

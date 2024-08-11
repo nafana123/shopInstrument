@@ -33,6 +33,7 @@ class HeaderSearchController extends AbstractController{
                 'name' => $product->getName(),
                 'amount' => $product->getAmount(),
                 'img' => $product->getImg(),
+                'types' => $product->getTypes(),
             ];
         }
 

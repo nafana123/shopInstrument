@@ -85,15 +85,21 @@
                     if (data.length > 0) {
                         data.forEach(function(product) {
                             let price = product.amount;
+                            let id = product.id;
+                            let typeId = product.types;
+                            let name = product.name
+                            let url = ('/'+ typeId + '/' + name + '/' + id);
 
                             $('#searchResults').append(
-                                `<div class="search-result-item">
-                    <img src="{{ asset('picture/katalog/') }}${product.img}" alt="${product.name}">
-                    <div>
-                        <h5>${product.name}</h5>
-                        <p class="price"><strong>${price} руб.</strong></p>
-                    </div>
-                </div>`
+                                ` <a href="${url}" class="card__image">
+                                <div class="search-result-item">
+                                        <img src="{{ asset('picture/katalog/') }}${product.img}" alt="${product.name}">
+                                    <div>
+                                        <h5>${product.name}</h5>
+                                         <p class="price"><strong>${price} руб.</strong></p>
+                                    </div>
+                                </div>
+                                </a>`
                             );
                         });
                     } else {
@@ -125,6 +131,10 @@
             if (!$(e.target).closest('#searchForm').length) {
                 $('#searchResults').hide();
             }
+        });
+
+        $('#searchForm').on('submit', function(e) {
+            e.preventDefault();
         });
     });
 </script>

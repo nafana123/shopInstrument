@@ -2,6 +2,7 @@
 
 namespace App\Controller\katalog;
 
+use App\Entity\Basket;
 use App\Entity\Images;
 use App\Entity\InfoProduct;
 use App\Entity\Product;
@@ -16,6 +17,7 @@ class InfoController extends AbstractController
  */
     public function mainpage($typeId, $id, EntityManagerInterface $entityManager)
     {
+        $user = $this->getUser();
 
         $product = $entityManager->getRepository(Product::class)->findOneBy(['types' => $typeId, 'id' => $id]);
 
@@ -26,6 +28,9 @@ class InfoController extends AbstractController
         $similarProducts = [];
 
         $infoProd = $entityManager->getRepository(InfoProduct::class)->findBy([], ['sale' => 'DESC'], 4);
+
+        $basketItems = $entityManager->getRepository(Basket::class)->findBy(['user' => $user]);
+        $basketProductIds = array_map(fn($item) => $item->getProduct()->getId(), $basketItems);
 
 
         foreach ($products as $similarProduct) {
@@ -39,7 +44,8 @@ class InfoController extends AbstractController
             'images' => $images,
             'infoProd' => $infoProd,
             'infoProduct' => $infoProduct,
-            'products' => $similarProducts
+            'products' => $similarProducts,
+            'basketProductIds' => $basketProductIds,
         ]);
     }
 }

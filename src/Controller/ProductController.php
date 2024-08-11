@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Basket;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,19 +21,21 @@ class ProductController extends AbstractController
         $this->em = $em;
         $this->productRepository = $productRepository;
     }
-
     /**
      * @Route("/{name}/{typeId}", name="product")
      */
-    public function mainpage($typeId, Request $request, EntityManagerInterface $entityManager)
+    public function mainpage($typeId)
     {
+        $products = $this->em->getRepository(Product::class)->findBy(['types' => $typeId]);
 
-        $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
+        $user = $this->getUser();
+        $basketItems = $this->em->getRepository(Basket::class)->findBy(['user' => $user]);
+        $basketProductIds = array_map(fn($item) => $item->getProduct()->getId(), $basketItems);
 
         return $this->render('katalog/product.html.twig', [
             'products' => $products,
-            'typeId' => $typeId
-
+            'typeId' => $typeId,
+            'basketProductIds' => $basketProductIds,
         ]);
     }
 
@@ -42,6 +45,8 @@ class ProductController extends AbstractController
      */
     public function filters(Request $request)
     {
+        $user = $this->getUser();
+
         $queryParams = $request->query->all();
 
         $typeId = $request->query->get('typeId');
@@ -52,12 +57,17 @@ class ProductController extends AbstractController
 
         $discounts = isset($queryParams['discount']) ? $queryParams['discount'] : [];
 
+        $basketItems = $this->em->getRepository(Basket::class)->findBy(['user' => $user]);
+        $basketProductIds = array_map(fn($item) => $item->getProduct()->getId(), $basketItems);
+
         $products = $this->productRepository->findAllSearchName($searchName, $typeId, $priceFrom, $priceTo, $sortPrice, $discounts);
 
         return $this->render('katalog/product.html.twig', [
             'products' => $products,
             'typeId' => $typeId,
             'discounts' => $discounts,
+            'basketProductIds' => $basketProductIds,
+
         ]);
     }
 

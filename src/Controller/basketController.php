@@ -7,6 +7,7 @@ use App\Entity\InfoProduct;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -23,18 +24,18 @@ class basketController extends AbstractController
     /**
      * @Route("/basket", name="basket", methods={"GET", "POST"})
      */
+
     public function list(Request $request)
     {
         $user = $this->getUser();
-        $id = $request->query->get('id');
+        $id = $request->request->get('id');
 
         if ($request->isMethod('POST')) {
-            $infoProduct = $this->em->getRepository(Product::class);
-            $product = $infoProduct->findOneBy(['id' => $id]);
+            $product = $this->em->getRepository(Product::class)->find($id);
 
             if ($product) {
                 $existingBasketItem = $this->em->getRepository(Basket::class)
-                    ->findOneBy(['user' => $user, 'name' => $product->getName()]);
+                    ->findOneBy(['user' => $user, 'product' => $product]);
 
                 if (!$existingBasketItem) {
                     $basket = new Basket();
@@ -48,13 +49,14 @@ class basketController extends AbstractController
                     $this->em->persist($basket);
                     $this->em->flush();
                 }
+
+                return new JsonResponse(['status' => 'success']);
             }
 
-            return $this->redirectToRoute('basket');
+            return new JsonResponse(['status' => 'error', 'message' => 'Product not found'], 404);
         }
 
         $basketItems = $this->em->getRepository(Basket::class)->findBy(['user' => $user]);
-
 
         return $this->render('basket.html.twig', [
             'cartItems' => $basketItems,

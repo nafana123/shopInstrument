@@ -14,8 +14,6 @@ class infoController extends AbstractController
      */
     public function infopage()
     {
-        // Получаем логин пользователя из кук
-
         return $this->render('infoCompany.html.twig');
     }
 
