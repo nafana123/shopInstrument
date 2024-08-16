@@ -183,4 +183,18 @@ a:hover{
     display: flex;
     justify-content: center;
 }
-
+#togglePassword {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    top: 4px;
+    left: -30px;
+    outline: none;
+    color: #ffd600;
+}
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}

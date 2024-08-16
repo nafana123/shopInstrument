@@ -30,25 +30,31 @@ class vhodController extends AbstractController
      */
     public function login(Request $request): Response
     {
-
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
             $password = $request->request->get('password');
 
-
+            try {
                 $user = $this->userProvider->loadUserByIdentifier($email);
 
-                if ($user && $this->passwordHasher->isPasswordValid($user, $password)) {
-                    $token = new UsernamePasswordToken($user, $password,  $user->getRoles());
+                if ($this->passwordHasher->isPasswordValid($user, $password)) {
+                    $token = new UsernamePasswordToken($user, $password, $user->getRoles());
                     $this->tokenStorage->setToken($token);
                     $request->getSession()->set('_security_main', serialize($token));
 
                     return $this->redirectToRoute('mainpage');
                 } else {
                     return $this->render('vhod.html.twig', [
-                        'error' => 'Неверная почта или пароль'
+                        'error' => 'Неверная почта или пароль',
+                        'email' => $email,
                     ]);
                 }
+            } catch (\Exception $e) {
+                return $this->render('vhod.html.twig', [
+                    'error' => 'Пользователь с таким email не найден',
+                    'email' => $email,
+                ]);
+            }
         }
 
         return $this->render('vhod.html.twig');

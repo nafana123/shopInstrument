@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('style/header/header.css') }}">
-
 </head>
 
 <body>
 {% block header %}
-    <nav class="navbar navbar-expand-lg bg-body-tertiary ">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <p class="navbar-brand col-1" href="#"></p>
             <a class="navbar-brand col-2" href="{{ path('mainpage') }}">Мир инструмента</a>
@@ -42,12 +41,10 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
                                 <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
                             </svg>
-                            <span id="cartItemCount"></span>
+                            <span id="cartItemCount">0</span>
                         </a>
                     </li>
                 </ul>
-
-
             </div>
         </div>
     </nav>
@@ -57,7 +54,7 @@
     <div>
         <ul class="nav justify-content-center">
             <li class="nav-item">
-                <a class="nav-link "  href="#katalog">Каталог</a>
+                <a class="nav-link" href="#katalog">Каталог</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#popular">Популярные товары</a>
@@ -87,18 +84,18 @@
                             let price = product.amount;
                             let id = product.id;
                             let typeId = product.types;
-                            let name = product.name
+                            let name = product.name;
                             let url = ('/'+ typeId + '/' + name + '/' + id);
 
                             $('#searchResults').append(
-                                ` <a href="${url}" class="card__image">
-                                <div class="search-result-item">
+                                `<a href="${url}" class="card__image">
+                                    <div class="search-result-item">
                                         <img src="{{ asset('picture/katalog/') }}${product.img}" alt="${product.name}">
-                                    <div>
-                                        <h5>${product.name}</h5>
-                                         <p class="price"><strong>${price} руб.</strong></p>
+                                        <div>
+                                            <h5>${product.name}</h5>
+                                            <p class="price"><strong>${price} руб.</strong></p>
+                                        </div>
                                     </div>
-                                </div>
                                 </a>`
                             );
                         });
@@ -106,9 +103,27 @@
                         $('#searchResults').append('<div class="search-result-item">Нет результатов</div>');
                     }
                 }
-
             });
         }
+
+        function fetchCartQuantity(query) {
+            $.ajax({
+                url: '{{ path('basket_quantity') }}',
+                type: 'GET',
+                data: { search: query },
+
+                success: function(response) {
+                        $('#cartItemCount').text(response.quantity);
+                    console.log(response.quantity);
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching cart quantity:', error);
+                }
+            });
+        }
+
+
 
         $('#searchInput').on('input', function() {
             let query = $(this).val();
@@ -136,9 +151,9 @@
         $('#searchForm').on('submit', function(e) {
             e.preventDefault();
         });
+
+        fetchCartQuantity();
     });
 </script>
-
-
 </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Basket;
 use App\Entity\Images;
 use App\Entity\PopularBrend;
 use App\Entity\Type;

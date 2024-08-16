@@ -25,7 +25,7 @@ class Product
     private ?int $amount = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $noSale = null;
+    private ?int $noSale = null;
 
     #[ORM\Column(length: 255)]
     private ?string $discont = null;
@@ -108,12 +108,12 @@ class Product
         $this->deleted = $deleted;
     }
 
-    public function getNoSale(): ?string
+    public function getNoSale(): ?int
     {
         return $this->noSale;
     }
 
-    public function setNoSale(?string $noSale): self
+    public function setNoSale(?int $noSale): self
     {
         $this->noSale = $noSale;
 

@@ -89,12 +89,13 @@ class basketController extends AbstractController
         $user = $this->getUser();
         $basketItems = $this->em->getRepository(Basket::class)->findBy(['user' => $user]);
 
-        $isEmpty = empty($basketItems);
+        $quantity = array_reduce($basketItems, function($carry, $item) {
+            return $carry + $item->getQuantity();
+        }, 0);
 
-        return $this->json([
-            'status' => $isEmpty ? 'success' : 'error'
-        ]);
+        return new JsonResponse([$quantity]);
     }
+
 
     /**
      * @Route("/basket/increment/{id}", name="basket_increment", methods={"POST"})

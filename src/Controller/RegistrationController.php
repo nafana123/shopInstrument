@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Type;
 use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,7 +41,10 @@ class RegistrationController extends AbstractController
                 $existingUser = $this->em->getRepository(Users::class)->findOneBy(['email' => $email]);
                 if ($existingUser) {
                     return $this->render('registration.html.twig', [
+                        'login' => $login,
+                        'email' => $email,
                         'error' => 'Данная почта уже зарегистрирована',
+                        'password' => $password,
                     ]);
                 }
                 else {
@@ -58,21 +62,12 @@ class RegistrationController extends AbstractController
                     $this->tokenStorage->setToken($token);
                     $request->getSession()->set('_security_main', serialize($token));
 
-                    return $this->redirectToRoute('registration_success');
+                    return $this->redirectToRoute('mainpage');
                 }
         }
 
         return $this->render('registration.html.twig', [
             'errors' => $errors,
         ]);
-    }
-
-    /**
-     * @Route("/registration-success", name="registration_success")
-     */
-    public function registrationSuccess(Request $request): Response
-    {
-        $login = $request->query->get('login');
-        return $this->render('base.html.twig', ['login' => $login]);
     }
 }
