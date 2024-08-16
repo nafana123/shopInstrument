@@ -32,7 +32,8 @@ class PasswordReset extends AbstractController
 
             if (empty($password)) {
                 return $this->render('passwordReset.html.twig', [
-                    'error' => 'Пароль не может быть пустым'
+                    'error' => 'Пароль не может быть пустым',
+                    'email' => $email,
                 ]);
             }
 
@@ -49,7 +50,9 @@ class PasswordReset extends AbstractController
                 ]);
             } else {
                 return $this->render('passwordReset.html.twig', [
-                    'error' => 'Данной почты не существует'
+                    'error' => 'Данной почты не существует',
+                    'email' => $email,
+                    'password' => $password,
                 ]);
             }
         }

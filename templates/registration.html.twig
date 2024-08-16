@@ -84,7 +84,7 @@
                 </label>
                 <input class="user-input" type="email" name="email" required id="email" placeholder="Почта" value="{{ email|default('') }}"   />
             </div>
-            <div>
+            <div class="password-container">
                 <label class="lock" for="password">
                     <svg viewBox="0 0 32 32">
                         <g filter="">
@@ -93,14 +93,12 @@
                     </svg>
                 </label>
                 <input type="password" name="password" id="password" required placeholder="Пароль" value="{{ password|default('') }}"/>
-                <label class="lock" for="password">
-                    <button type="button" id="togglePassword" style="margin-left: 475px; margin-top: -2px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM8 12.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/>
-                            <path d="M8 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                        </svg>
-                    </button>
-                </label>
+                <button type="button" id="togglePassword">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM8 12.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/>
+                        <path d="M8 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                    </svg>
+                </button>
             </div>
 
             <div>
@@ -127,7 +125,6 @@
             passwordInput.setAttribute('type', 'password');
         }
 
-        // Toggle the eye icon if necessary
         this.querySelector('svg').classList.toggle('bi-eye');
         this.querySelector('svg').classList.toggle('bi-eye-slash');
     });
