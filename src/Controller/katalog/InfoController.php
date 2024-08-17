@@ -6,6 +6,7 @@ use App\Entity\Basket;
 use App\Entity\Images;
 use App\Entity\InfoProduct;
 use App\Entity\Product;
+use App\Entity\ProductCharacteristics;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,25 +20,20 @@ class InfoController extends AbstractController
     {
         $user = $this->getUser();
 
-        $product = $entityManager->getRepository(Product::class)->findOneBy(['types' => $typeId, 'id' => $id]);
+        $infoProduct = $entityManager->getRepository(InfoProduct::class)->findOneBy(['product' => $id]);
 
+        $product = $infoProduct->getProduct();
+
+        $productCharacteristics = $entityManager->getRepository(ProductCharacteristics::class)->findBy(['product' => $product]);
         $images = $entityManager->getRepository(Images::class)->findBy(['id_product' => $id]);
-        $infoProduct = $entityManager->getRepository(InfoProduct::class)->findOneBy(['id_product' => $id]);
 
         $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
-        $similarProducts = [];
+        $similarProducts = array_filter($products, fn($similarProduct) => $similarProduct->getId() !== $id);
 
         $infoProd = $entityManager->getRepository(InfoProduct::class)->findBy([], ['sale' => 'DESC'], 4);
 
         $basketItems = $entityManager->getRepository(Basket::class)->findBy(['user' => $user]);
         $basketProductIds = array_map(fn($item) => $item->getProduct()->getId(), $basketItems);
-
-
-        foreach ($products as $similarProduct) {
-            if ($similarProduct->getId() != $id) {
-                $similarProducts[] = $similarProduct;
-            }
-        }
 
         return $this->render('katalog/infoProduct.html.twig', [
             'product' => $product,
@@ -46,6 +42,8 @@ class InfoController extends AbstractController
             'infoProduct' => $infoProduct,
             'products' => $similarProducts,
             'basketProductIds' => $basketProductIds,
+            'productCharacteristics' => $productCharacteristics,
         ]);
     }
+
 }

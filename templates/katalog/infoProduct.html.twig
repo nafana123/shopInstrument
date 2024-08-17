@@ -17,14 +17,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     {% endblock %}
 </head>
-<style>
-    .btn-added-to-cart {
-        background: whitesmoke;
-        color: green;
-    }
-
-
-</style>
 <body>
 <div class="containers">
     <div class="containermain">
@@ -40,8 +32,8 @@
         <img src="" alt="Главное изображение" id="mainImage">
     </div>
     <div class="secondcont">
-        <h2>{{ infoProduct.name }}</h2>
-        {% if infoProduct.stock != 0 %}
+        <h2>{{ product.name }}</h2>
+        {% if product.deleted != 1 %}
             <p class="stock">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -51,7 +43,7 @@
         {% else %}
             <p class="nostock">Нет в наличии</p>
         {% endif %}
-        <h2>{{ infoProduct.price }} р.</h2>
+        <h2>{{ product.amount }} р.</h2>
         {% if app.user is not empty %}
             <div class="product-buttons">
                 {% if product.id in basketProductIds %}
@@ -83,22 +75,16 @@
     <p class="pre">{{ infoProduct.description }}</p>
 
     <h4 style="margin-left: 10%; margin-top:30px">Характеристики и комплектация</h4>
-    {% if infoProduct.type == 1 %}
-        {% include 'katalog/info/add_bet.html.twig' %}
-        {% elseif infoProduct.type == 2%}
-            {% include 'katalog/info/add_pila.html.twig' %}
-
-        {% elseif infoProduct.type == 3%}
-            {% include 'katalog/info/add_trimer.html.twig' %}
-
-        {% elseif infoProduct.type == 4%}
-            {% include 'katalog/info/add_moyka.html.twig' %}
-
-        {% elseif infoProduct.type == 5%}
-            {% include 'katalog/info/add_moto.html.twig' %}
-        {% elseif infoProduct.type == 6%}
-            {% include 'katalog/info/add_svarka.html.twig' %}
-    {% endif %}
+    {% for productCharacteristic in productCharacteristics %}
+    <div class="product-info">
+        <div class="attribute">
+            <p class="label">{{ productCharacteristic.characteristic}} </p>
+        </div>
+        <div class="attribute1">
+            <p class="label"> {{productCharacteristic.value }}</p>
+        </div>
+    </div>
+    {% endfor %}
 </div>
 
 
@@ -150,12 +136,12 @@
     <div class="row justify-content-center">
         {% for infoProds in infoProd %}
             <article class="col-sm-6 col-md-4 col-lg-3">
-                <a href="{{ path('info_product', {'typeId': infoProds.type, 'name': infoProds.name, 'id': infoProds.idProduct}) }}" class="card__image" style="text-decoration: none; color: black">
+                <a href="{{ path('info_product', {'typeId': infoProds.type, 'name': infoProds.product.name, 'id': infoProds.product.id}) }}" class="card__image" style="text-decoration: none; color: black">
                     <div class="cards" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; transition: transform 0.3s;">
-                        <img src="{{ asset('picture/product/' ~ infoProds.img) }}" style="width: 250px; height: 200px" class="img-fluid" alt="{{ infoProds.name }}">
+                        <img src="{{ asset('picture/product/' ~ infoProds.img) }}" style="width: 250px; height: 200px" class="img-fluid" alt="{{ infoProds.product.name }}">
                         <div class="card-body text-center">
-                            <h5 class="card-title" style="padding-bottom: 10px; margin-top: 10px">{{ infoProds.name }}</h5>
-                            <p class="card-text" style="font-size: 25px;padding-bottom: 10px" >Цена: {{ infoProds.price }} ₽</p>
+                            <h5 class="card-title" style="padding-bottom: 10px; margin-top: 10px">{{ infoProds.product.name }}</h5>
+                            <p class="card-text" style="font-size: 25px;padding-bottom: 10px" >Цена: {{ infoProds.product.amount }} ₽</p>
                         </div>
                     </div>
                 </a>

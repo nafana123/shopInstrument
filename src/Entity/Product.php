@@ -40,9 +40,26 @@ class Product
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Basket::class)]
     private Collection $basket;
 
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductCharacteristics::class)]
+    private Collection $characteristics;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Test::class)]
+    private Collection $test;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: InfoProduct::class)]
+    private Collection $infoProducts;
+
+
+
     public function __construct()
     {
         $this->basket = new ArrayCollection();
+
+        $this->characteristics = new ArrayCollection();
+
+        $this->test = new ArrayCollection();
+
+        $this->infoProducts = new ArrayCollection();
     }
 
 

@@ -1,19 +1,18 @@
 <?php
 
 namespace App\Entity;
-
-use App\Repository\InfoProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: InfoProductRepository::class)]
-class InfoProduct
+#[ORM\Entity] // Добавляем эту строку
+
+class Test
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'infoProducts')]
+    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'test')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
@@ -90,4 +89,5 @@ class InfoProduct
         $this->sale = $sale;
         return $this;
     }
+
 }
