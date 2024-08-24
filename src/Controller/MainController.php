@@ -2,12 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Basket;
-use App\Entity\Images;
 use App\Entity\PopularBrend;
 use App\Entity\Type;
 use App\Entity\InfoProduct;
-use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +16,7 @@ class MainController extends AbstractController
     /**
      * @Route("/", name="mainpage")
      */
-    public function mainpage(Request $request, CookieService $cookieService, EntityManagerInterface $entityManager): Response
+    public function mainpage(Request $request, EntityManagerInterface $entityManager): Response
     {
         $types = $entityManager->getRepository(Type::class)->findAll();
         $imgs = $entityManager->getRepository(PopularBrend::class)->findAll();

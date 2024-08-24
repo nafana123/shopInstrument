@@ -37,17 +37,21 @@ class Product
     #[ORM\Column(length: 255)]
     private ?int $deleted = 0;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Basket::class)]
+    #[ORM\OneToMany(targetEntity: Basket::class, mappedBy: 'product')]
     private Collection $basket;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductCharacteristics::class)]
+    #[ORM\OneToMany(targetEntity: ProductCharacteristics::class, mappedBy: 'product')]
     private Collection $characteristics;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Test::class)]
+    #[ORM\OneToMany(targetEntity: Test::class, mappedBy: 'product')]
     private Collection $test;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: InfoProduct::class)]
+    #[ORM\OneToMany(targetEntity: InfoProduct::class, mappedBy: 'product')]
     private Collection $infoProducts;
+
+
+    #[ORM\OneToMany(targetEntity: Checks::class, mappedBy: 'product')]
+    private Collection $checks;
 
 
 
@@ -60,6 +64,8 @@ class Product
         $this->test = new ArrayCollection();
 
         $this->infoProducts = new ArrayCollection();
+
+        $this->checks = new ArrayCollection();
     }
 
 

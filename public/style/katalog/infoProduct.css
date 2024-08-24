@@ -232,3 +232,35 @@
     cursor: pointer;
 }
 
+
+.add-to-basket {
+    background-color: transparent;
+    color: #28a745;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    border: 2px solid #28a745;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.add-to-basket:hover {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.added-to-basket-text a {
+    font-size: 18px;
+    font-weight: bold;
+    color: #28a745;
+    text-decoration: none;
+    border-bottom: 1px dotted #28a745;
+    padding-bottom: 2px;
+}
+
+.added-to-basket-text a:hover {
+    color: #218838;
+    border-bottom: 1px solid #218838;
+}
+
+

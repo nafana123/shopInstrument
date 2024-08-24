@@ -47,11 +47,14 @@
         {% if app.user is not empty %}
             <div class="product-buttons">
                 {% if product.id in basketProductIds %}
-                    <button data-product-id="{{ product.id }}"  class="btn btn-success added-to-basket" style="display: inline; width: 100%">Товар добавлен в корзину</button>
-                    <button data-product-id="{{ product.id }}" class="btn btn-success add-to-basket" style="display: none;  width: 100%">Добавить в корзину</button>
+                    <div class="added-to-basket-text">
+                        <a href="{{ path('basket') }}">✓ Товар добавлен в корзину</a>
+                    </div>
                 {% else %}
                     <button data-product-id="{{ product.id }}" class="btn btn-success add-to-basket" style="width: 100%">Добавить в корзину</button>
-                    <button data-product-id="{{ product.id }}" class="btn btn-success added-to-basket" style="display: none; width: 100%">Товар добавлен в корзину</button>
+                    <div class="added-to-basket-text" style="display: none;">
+                        <a href="{{ path('basket') }}">✓ Товар добавлен в корзину</a>
+                    </div>
                 {% endif %}
             </div>
         {% else %}
@@ -110,13 +113,16 @@
                                 {{ product.name }}
                             </a>
                             {% if app.user is not empty %}
-                                <div class="product-buttons">
+                                <div class="product-buttons" style="text-align: center">
                                     {% if product.id in basketProductIds %}
-                                        <button data-product-id="{{ product.id }}"  class="btn btn-success added-to-basket" style="display: inline; width: 100%">Товар добавлен в корзину</button>
-                                        <button data-product-id="{{ product.id }}" class="btn btn-success add-to-basket" style="display: none;  width: 100%">Добавить в корзину</button>
+                                        <div class="added-to-basket-text">
+                                            <a href="{{ path('basket') }}">Товар добавлен в корзину</a>
+                                        </div>
                                     {% else %}
                                         <button data-product-id="{{ product.id }}" class="btn btn-success add-to-basket" style="width: 100%">Добавить в корзину</button>
-                                        <button data-product-id="{{ product.id }}" class="btn btn-success added-to-basket" style="display: none; width: 100%">Товар добавлен в корзину</button>
+                                        <div class="added-to-basket-text" style="display: none;">
+                                            <a href="{{ path('basket') }}">Товар добавлен в корзину</a>
+                                        </div>
                                     {% endif %}
                                 </div>
                             {% else %}
@@ -183,7 +189,7 @@
 
             var button = $(this);
             var productId = button.data('product-id');
-            var addedButton = button.siblings('.added-to-basket');
+            var addedText = button.siblings('.added-to-basket-text');
 
             $.ajax({
                 url: '{{ path('basket') }}',
@@ -192,7 +198,7 @@
                 success: function(response) {
                     if (response.status === 'success') {
                         button.hide();
-                        addedButton.show();
+                        addedText.show();
                     } else {
                         alert('Ошибка при добавлении товара в корзину. Попробуйте снова.');
                     }
@@ -201,10 +207,6 @@
                     alert('Ошибка при добавлении товара в корзину. Попробуйте снова.');
                 }
             });
-        });
-
-        $('.added-to-basket').on('click', function() {
-            window.location.href = '{{ path('basket') }}';
         });
     });
 

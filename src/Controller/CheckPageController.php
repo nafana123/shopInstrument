@@ -30,25 +30,26 @@ class CheckPageController extends AbstractController
     public function index(Request $request)
     {
         $user = $this->getUser();
-
-        $infoProductRepository = $this->entityManager->getRepository(InfoProduct::class);
-        $basketItems = $this->entityManager->getRepository(Basket::class)->findBy(['user' => $user]);
-
-        $orderNumber = mt_rand(100000, 999999);
         $totalPrice = 0;
-        $dateTimeNow = new \DateTime();
 
-        foreach ($basketItems as $basketItem) {
-            $quantity = $basketItem->getQuantity();
 
-            $product = $infoProductRepository->findOneBy(['id_product' => $basketItem->getProduct()]);
+        if ($request->isMethod('POST')) {
+            $basketItems = $this->entityManager->getRepository(Basket::class)->findBy(['user' => $user]);
 
-       if ($product) {
+            $orderNumber = mt_rand(100000, 999999);
+            $totalPrice = 0;
+            $dateTimeNow = new \DateTime();
+
+            foreach ($basketItems as $basketItem) {
+                $quantity = $basketItem->getQuantity();
+                $product = $basketItem->getProduct();
+
+                if ($product) {
                     $check = new Checks();
-                    $check->setIdProducts($product->getIdProduct());
+                    $check->setProduct($product);
                     $check->setIdUser($user->getId());
                     $check->setCount($quantity);
-                    $check->setFinalPrice($product->getPrice());
+                    $check->setFinalPrice($product->getAmount());
                     $check->setOrderNumber($orderNumber);
                     $check->setName($product->getName());
                     $check->setImg($product->getImg());
@@ -57,31 +58,33 @@ class CheckPageController extends AbstractController
                     $registrationDate = new \DateTime();
                     $check->setData($registrationDate->format('d-m-Y'));
 
-
-                    $totalPrice += $product->getPrice() * $quantity;
+                    $totalPrice += $product->getAmount() * $quantity;
                     $check->setItogPrice($totalPrice);
-
 
                     $this->entityManager->persist($check);
                 }
             }
 
-        $this->entityManager->flush();
+            $this->entityManager->flush();
+
+            foreach ($basketItems as $basketItem) {
+                $this->entityManager->remove($basketItem);
+                $this->entityManager->flush();
+            }
+
+            return $this->redirectToRoute('check');
+        }
 
         $checks = $this->entityManager->getRepository(Checks::class)->findBy(['id_user' => $user->getId()]);
 
-
-        $response = $this->render('checkPage.html.twig', [
+        return $this->render('checkPage.html.twig', [
             'login' => $user->getLogin(),
             'user' => $user,
             'checks' => $checks,
             'totalPrice' => $totalPrice,
         ]);
-
-        $response->headers->clearCookie('cart');
-
-        return $response;
     }
+
     /**
      * @Route("/download-pdf/{orderId}", name="download_pdf")
      */

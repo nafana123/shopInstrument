@@ -98,16 +98,19 @@
                                         {% if app.user is not empty %}
                                             <div class="product-buttons">
                                                 {% if product.id in basketProductIds %}
-                                                    <a data-product-id="{{ product.id }}"  class=" added-to-basket" style="display: inline; width: 100%">Товар добавлен в корзину</a>
-                                                    <button data-product-id="{{ product.id }}" class="btn btn-success add-to-basket" style="display: none;  width: 100%">Добавить в корзину</button>
+                                                    <div class="added-to-basket-text">
+                                                        <a href="{{ path('basket') }}">Товар добавлен в корзину</a>
+                                                    </div>
                                                 {% else %}
                                                     <button data-product-id="{{ product.id }}" class="btn btn-success add-to-basket" style="width: 100%">Добавить в корзину</button>
-                                                    <a data-product-id="{{ product.id }}" class="added-to-basket" style="display: none; width: 100%">Товар добавлен в корзину</a>
+                                                    <div class="added-to-basket-text" style="display: none;">
+                                                        <a href="{{ path('basket') }}">Товар добавлен в корзину</a>
+                                                    </div>
                                                 {% endif %}
                                             </div>
-                                        {% else %}
-                                            <div class="aa" style="text-align: center">
-                                                <a href="{{ path('vhod') }}" style="text-decoration: none;">Нужно авторизоваться, чтобы добавить товар в корзину</a>
+                                            {% else %}
+                                             <div class="aa" style="text-align: center">
+                                                 <a href="{{ path('vhod') }}" style="text-decoration: none;">Нужно авторизоваться, чтобы добавить товар в корзину</a>
                                             </div>
                                         {% endif %}
                                     </div>
@@ -128,7 +131,7 @@
 
             var button = $(this);
             var productId = button.data('product-id');
-            var addedButton = button.siblings('.added-to-basket');
+            var addedText = button.siblings('.added-to-basket-text');
 
             $.ajax({
                 url: '{{ path('basket') }}',
@@ -137,7 +140,7 @@
                 success: function(response) {
                     if (response.status === 'success') {
                         button.hide();
-                        addedButton.show();
+                        addedText.show();
                     } else {
                         alert('Ошибка при добавлении товара в корзину. Попробуйте снова.');
                     }
@@ -147,11 +150,8 @@
                 }
             });
         });
-
-        $('.added-to-basket').on('click', function() {
-            window.location.href = '{{ path('basket') }}';
-        });
     });
+
 </script>
 </body>
 </html>

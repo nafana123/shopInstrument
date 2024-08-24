@@ -28,7 +28,7 @@ class InfoController extends AbstractController
         $images = $entityManager->getRepository(Images::class)->findBy(['id_product' => $id]);
 
         $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
-        $similarProducts = array_filter($products, fn($similarProduct) => $similarProduct->getId() !== $id);
+        $similarProducts = array_filter($products, fn($similarProduct) => $similarProduct->getId() !== $product->getId());
 
         $infoProd = $entityManager->getRepository(InfoProduct::class)->findBy([], ['sale' => 'DESC'], 4);
 

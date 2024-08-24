@@ -23,8 +23,9 @@ class Checks
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $id_products = null;
+    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'checks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Product $product = null;
 
     #[ORM\Column(length: 255)]
     private ?string $id_user = null;
@@ -60,17 +61,18 @@ class Checks
         return $this->id;
     }
 
-    public function getIdProducts(): ?string
+    public function getProduct(): ?Product
     {
-        return $this->id_products;
+        return $this->product;
     }
 
-    public function setIdProducts(string $id_products): static
+    public function setProduct(?Product $product): self
     {
-        $this->id_products = $id_products;
+        $this->product = $product;
 
         return $this;
     }
+
 
     public function getIdUser(): ?string
     {
