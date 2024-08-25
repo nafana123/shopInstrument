@@ -4,14 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Checks;
 use App\Entity\Images;
-use App\Entity\InfoProduct;
 use App\Entity\PopularBrend;
 use App\Entity\Product;
+use App\Entity\ProductCharacteristics;
 use App\Entity\Type;
 use App\Repository\ChecksRepository;
 use App\Repository\InfoProductRepository;
 use App\Repository\UsersRepository;
-use App\Services\CookieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -409,36 +408,13 @@ public function index(){
     {
         $product = $entityManager->getRepository(Product::class)->findOneBy(['types' => $typeId, 'id' => $id]);
         $images = $entityManager->getRepository(Images::class)->findBy(['id_product' => $id]);
-        $infoProduct = $entityManager->getRepository(InfoProduct::class)->findOneBy(['id_product' => $id]);
-
-        if (!$infoProduct) {
-            $infoProduct = new InfoProduct();
-            $infoProduct->setIdProduct($id);
-            $infoProduct->setType($typeId);
-            $infoProduct->setSale(0);
-            $infoProduct->setTime(0);
-        }
+        $productCharacteristics = $entityManager->getRepository(ProductCharacteristics::class)->findBy(['product' => $product]);
 
         if ($request->isMethod('POST')) {
-            $infoProduct->setName($request->request->get('name'));
-            $infoProduct->setPrice($request->request->get('price'));
-            $infoProduct->setStock($request->request->get('stock'));
-            $infoProduct->setDescription($request->request->get('description'));
-            $infoProduct->setManufacturer($request->request->get('manufacturer'));
-            $infoProduct->setWeight($request->request->get('weight'));
-            $infoProduct->setVolume($request->request->get('volume'));
-            $infoProduct->setVoltage($request->request->get('voltage'));
-            $infoProduct->setRown($request->request->get('rown'));
-            $infoProduct->setEngine($request->request->get('engine'));
-            $infoProduct->setPower($request->request->get('power'));
-            $infoProduct->setMixtures($request->request->get('mixtures'));
-            $infoProduct->setDrive($request->request->get('drive'));
-            $infoProduct->setRetainer($request->request->get('retainer'));
-            $infoProduct->setConnections($request->request->get('connections'));
-            $infoProduct->setWheels($request->request->get('wheels'));
-            $infoProduct->setDimensions($request->request->get('dimensions'));
-            $infoProduct->setCountry($request->request->get('country'));
-            $infoProduct->setMotherland($request->request->get('motherland'));
+            $product->setName($request->request->get('name'));
+            $product->setAmount($request->request->get('price'));
+            $product->setDiscont(0);
+            $product->setDescription($request->request->get('description'));
 
             $uploadDir = $this->getParameter('katalog_directorys');
 
@@ -454,10 +430,6 @@ public function index(){
                         if ($img) {
                             $img->setImg($newFilename);
                             $entityManager->persist($img);
-
-                            if ($infoProduct->getImg() == $img->getImg()) {
-                                $infoProduct->setImg($newFilename);
-                            }
                         }
                     }
                 }
@@ -478,8 +450,8 @@ public function index(){
 
                         $entityManager->persist($img);
 
-                        if ($uploadedCount == 0 && !$infoProduct->getImg()) {
-                            $infoProduct->setImg($newFilename);
+                        if ($uploadedCount == 0 && !$product->getImg()) {
+                            $product->setImg($newFilename);
                         }
 
                         $uploadedCount++;
@@ -487,7 +459,23 @@ public function index(){
                 }
             }
 
-            $entityManager->persist($infoProduct);
+            $characteristicsData = $request->request->all('characteristics');
+
+            foreach ($characteristicsData as $characteristicData) {
+                $characteristic = $entityManager->getRepository(ProductCharacteristics::class)
+                    ->findOneBy(['product' => $product, 'characteristic' => $characteristicData['name']]);
+
+                if (!$characteristic) {
+                    $characteristic = new ProductCharacteristics();
+                    $characteristic->setProduct($product);
+                }
+
+                $characteristic->setCharacteristic($characteristicData['name']);
+                $characteristic->setValue($characteristicData['value']);
+                $entityManager->persist($characteristic);
+            }
+
+            $entityManager->persist($product);
             $entityManager->flush();
 
             $this->addFlash('success', 'Информация о товаре обновлена');
@@ -505,8 +493,8 @@ public function index(){
         return $this->render('admin/AdminInfoProduct.html.twig', [
             'product' => $product,
             'images' => $images,
-            'infoProduct' => $infoProduct,
-            'products' => $similarProducts
+            'products' => $similarProducts,
+            'productCharacteristics' => $productCharacteristics,
         ]);
     }
 

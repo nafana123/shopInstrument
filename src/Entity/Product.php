@@ -37,6 +37,9 @@ class Product
     #[ORM\Column(length: 255)]
     private ?int $deleted = 0;
 
+    #[ORM\Column(length: 1255, nullable: true)]
+    private ?string $description = null;
+
     #[ORM\OneToMany(targetEntity: Basket::class, mappedBy: 'product')]
     private Collection $basket;
 
@@ -46,8 +49,7 @@ class Product
     #[ORM\OneToMany(targetEntity: Test::class, mappedBy: 'product')]
     private Collection $test;
 
-    #[ORM\OneToMany(targetEntity: InfoProduct::class, mappedBy: 'product')]
-    private Collection $infoProducts;
+
 
 
     #[ORM\OneToMany(targetEntity: Checks::class, mappedBy: 'product')]
@@ -63,7 +65,6 @@ class Product
 
         $this->test = new ArrayCollection();
 
-        $this->infoProducts = new ArrayCollection();
 
         $this->checks = new ArrayCollection();
     }
@@ -151,6 +152,16 @@ class Product
     public function setDiscont(?string $discont): self
     {
         $this->discont = $discont;
+        return $this;
+    }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
         return $this;
     }
 }

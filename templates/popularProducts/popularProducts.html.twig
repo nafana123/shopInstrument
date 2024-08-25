@@ -30,14 +30,14 @@
 <div class="container">
     <h1 class="zag" id="popular">Популярные товары</h1>
     <div class="row justify-content-center">
-        {% for infoProducts in infoProduct %}
+        {% for popularProducts in popularProduct %}
             <article class="col-sm-5 col-md-5 col-lg-3">
-                <a href="{{ path('info_product', {'typeId': infoProducts.type, 'name': infoProducts.product.name, 'id': infoProducts.product.id}) }}" class="card__image" style="text-decoration: none; color: black">
+                <a href="{{ path('info_product', {'typeId': popularProducts.types, 'name': popularProducts.name, 'id': popularProducts.id}) }}" class="card__image" style="text-decoration: none; color: black">
                     <div class="cards" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; transition: transform 0.3s;">
-                        <img src="{{ asset('picture/product/' ~ infoProducts.img) }}" class="img-fluid" alt="{{ infoProducts.product.name }}">
+                        <img src="{{ asset('picture/katalog/' ~ popularProducts.img) }}" class="img-fluid" alt="{{ popularProducts.name }}">
                         <div class="card-body text-center">
-                            <h5 class="card-title" style="padding-bottom: 10px; margin-top: 10px">{{ infoProducts.product.name }}</h5>
-                            <p class="card-text" style="font-size: 25px;padding-bottom: 10px">Цена: {{ infoProducts.product.amount }} ₽</p>
+                            <h5 class="card-title" style="padding-bottom: 10px; margin-top: 10px">{{ popularProducts.name }}</h5>
+                            <p class="card-text" style="font-size: 25px;padding-bottom: 10px">Цена: {{ popularProducts.amount }} ₽</p>
                         </div>
                     </div>
                 </a>

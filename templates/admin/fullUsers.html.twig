@@ -59,7 +59,6 @@
                                 <h5 class="card-title">{{ user.login }}</h5>
                                 <p class="card-text">
                                     <b>Email:</b> {{ user.email }}<br>
-                                    <b>Password:</b> {{ user.password }}<br>
                                     <b>Дата регистрации:</b> {{ user.data|date("d.m.Y H:i") }}
                                 </p>
                                 <a href="{{ path('user_orders', {'id': user.id}) }}" class="btn btn-primary">Подробнее</a>

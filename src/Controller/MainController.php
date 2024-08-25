@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\PopularBrend;
+use App\Entity\Product;
 use App\Entity\Type;
-use App\Entity\InfoProduct;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,11 +20,11 @@ class MainController extends AbstractController
     {
         $types = $entityManager->getRepository(Type::class)->findAll();
         $imgs = $entityManager->getRepository(PopularBrend::class)->findAll();
-        $infoProduct = $entityManager->getRepository(InfoProduct::class)->findBy([], ['sale' => 'DESC'], 4);
+        $popularProduct = $entityManager->getRepository(Product::class)->findBy([], ['amount' => 'DESC'], 4);
 
         return $this->render('base.html.twig', [
             'types' => $types,
-            'infoProduct' => $infoProduct,
+            'popularProduct' => $popularProduct,
             'imgs' => $imgs,
         ]);
     }

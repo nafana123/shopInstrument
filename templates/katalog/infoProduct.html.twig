@@ -75,7 +75,7 @@
 <div class="description">
     <h1 style="margin-left: 10%;">Описание</h1>
 
-    <p class="pre">{{ infoProduct.description }}</p>
+    <p class="pre">{{ product.description }}</p>
 
     <h4 style="margin-left: 10%; margin-top:30px">Характеристики и комплектация</h4>
     {% for productCharacteristic in productCharacteristics %}
@@ -142,12 +142,12 @@
     <div class="row justify-content-center">
         {% for infoProds in infoProd %}
             <article class="col-sm-6 col-md-4 col-lg-3">
-                <a href="{{ path('info_product', {'typeId': infoProds.type, 'name': infoProds.product.name, 'id': infoProds.product.id}) }}" class="card__image" style="text-decoration: none; color: black">
+                <a href="{{ path('info_product', {'typeId': infoProds.types, 'name': infoProds.name, 'id': infoProds.id}) }}" class="card__image" style="text-decoration: none; color: black">
                     <div class="cards" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; transition: transform 0.3s;">
-                        <img src="{{ asset('picture/product/' ~ infoProds.img) }}" style="width: 250px; height: 200px" class="img-fluid" alt="{{ infoProds.product.name }}">
+                        <img src="{{ asset('picture/katalog/' ~ infoProds.img) }}" style="width: 250px; height: 200px" class="img-fluid" alt="{{ infoProds.name }}">
                         <div class="card-body text-center">
-                            <h5 class="card-title" style="padding-bottom: 10px; margin-top: 10px">{{ infoProds.product.name }}</h5>
-                            <p class="card-text" style="font-size: 25px;padding-bottom: 10px" >Цена: {{ infoProds.product.amount }} ₽</p>
+                            <h5 class="card-title" style="padding-bottom: 10px; margin-top: 10px">{{ infoProds.name }}</h5>
+                            <p class="card-text" style="font-size: 25px;padding-bottom: 10px" >Цена: {{ infoProds.amount }} ₽</p>
                         </div>
                     </div>
                 </a>

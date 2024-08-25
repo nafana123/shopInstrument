@@ -20,9 +20,7 @@ class InfoController extends AbstractController
     {
         $user = $this->getUser();
 
-        $infoProduct = $entityManager->getRepository(InfoProduct::class)->findOneBy(['product' => $id]);
-
-        $product = $infoProduct->getProduct();
+        $product = $entityManager->getRepository(Product::class)->find($id);
 
         $productCharacteristics = $entityManager->getRepository(ProductCharacteristics::class)->findBy(['product' => $product]);
         $images = $entityManager->getRepository(Images::class)->findBy(['id_product' => $id]);
@@ -30,7 +28,7 @@ class InfoController extends AbstractController
         $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
         $similarProducts = array_filter($products, fn($similarProduct) => $similarProduct->getId() !== $product->getId());
 
-        $infoProd = $entityManager->getRepository(InfoProduct::class)->findBy([], ['sale' => 'DESC'], 4);
+        $infoProd = $entityManager->getRepository(Product::class)->findBy([], ['amount' => 'DESC'], 4);
 
         $basketItems = $entityManager->getRepository(Basket::class)->findBy(['user' => $user]);
         $basketProductIds = array_map(fn($item) => $item->getProduct()->getId(), $basketItems);
@@ -39,7 +37,6 @@ class InfoController extends AbstractController
             'product' => $product,
             'images' => $images,
             'infoProd' => $infoProd,
-            'infoProduct' => $infoProduct,
             'products' => $similarProducts,
             'basketProductIds' => $basketProductIds,
             'productCharacteristics' => $productCharacteristics,
