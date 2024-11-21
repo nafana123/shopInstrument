@@ -23,10 +23,6 @@ class Checks
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'checks')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Product $product = null;
-
     #[ORM\Column(length: 255)]
     private ?string $id_user = null;
 

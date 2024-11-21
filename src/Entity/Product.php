@@ -46,12 +46,6 @@ class Product
     #[ORM\OneToMany(targetEntity: ProductCharacteristics::class, mappedBy: 'product')]
     private Collection $characteristics;
 
-    #[ORM\OneToMany(targetEntity: Test::class, mappedBy: 'product')]
-    private Collection $test;
-
-
-
-
     #[ORM\OneToMany(targetEntity: Checks::class, mappedBy: 'product')]
     private Collection $checks;
 

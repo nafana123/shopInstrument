@@ -20,7 +20,6 @@ final class Version20240824190404 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE info_product DROP FOREIGN KEY FK_518F2D334584665A');
         $this->addSql('DROP TABLE info_product');
     }
 
