@@ -216,17 +216,7 @@
 .btn.btn-success{
     margin-top: 10px;
 }
-.product-info {
-    display: flex;
-    margin-left: 10%;
-}
 
-.attribute {
-    margin-bottom: 10px;
-}
-.attribute1{
-    margin-left: 250px;
-}
 .inf:hover{
     text-decoration: underline;
     cursor: pointer;
@@ -262,5 +252,18 @@
     color: #218838;
     border-bottom: 1px solid #218838;
 }
+.product-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Выравнивание по вертикали */
+    margin-bottom: 10px;
+}
 
+.attribute {
+    margin-left: 145px;
+}
 
+.attribute1 {
+    text-align: left;
+    margin-right: 500px;
+}
