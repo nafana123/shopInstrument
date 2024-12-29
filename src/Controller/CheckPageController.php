@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Basket;
 use App\Entity\Checks;
 use App\Entity\InfoProduct;
+use App\Service\TelegramService;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -18,10 +19,13 @@ class CheckPageController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
+    private TelegramService $telegramService;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager,  TelegramService $telegramService)
     {
         $this->entityManager = $entityManager;
+
+        $this->telegramService = $telegramService;
     }
 
     /**
@@ -39,6 +43,8 @@ class CheckPageController extends AbstractController
             $orderNumber = mt_rand(100000, 999999);
             $totalPrice = 0;
             $dateTimeNow = new \DateTime();
+
+            $itemsForNotification = [];
 
             foreach ($basketItems as $basketItem) {
                 $quantity = $basketItem->getQuantity();
@@ -62,8 +68,20 @@ class CheckPageController extends AbstractController
                     $check->setItogPrice($totalPrice);
 
                     $this->entityManager->persist($check);
+
+                    $itemsForNotification[] = [
+                        'product' => $product,
+                        'quantity' => $quantity
+                    ];
                 }
             }
+
+            $this->telegramService->sendOrderNotification(
+                $user->getLogin(),
+                $orderNumber,
+                $itemsForNotification,
+                $totalPrice
+            );
 
             $this->entityManager->flush();
 
