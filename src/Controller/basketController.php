@@ -82,22 +82,6 @@ class basketController extends AbstractController
     }
 
     /**
-     * @Route("/basket/quantity", name="basket_quantity", methods={"GET"})
-     */
-    public function basketQuantity()
-    {
-        $user = $this->getUser();
-        $basketItems = $this->em->getRepository(Basket::class)->findBy(['user' => $user]);
-
-        $quantity = array_reduce($basketItems, function($carry, $item) {
-            return $carry + $item->getQuantity();
-        }, 0);
-
-        return new JsonResponse([$quantity]);
-    }
-
-
-    /**
      * @Route("/basket/increment/{id}", name="basket_increment", methods={"POST"})
      */
     public function incrementQuantity($id)
@@ -135,6 +119,19 @@ class basketController extends AbstractController
         }
 
         return $this->json(['status' => 'error', 'message' => 'Item not found'], 404);
+    }
+
+    /**
+     * @Route("/basket/item/count", name="item_count", methods={"GET", "POST"})
+     */
+    public function countItem()
+    {
+        $user = $this->getUser();
+        $basketItems = $this->em->getRepository(Basket::class)->findBy(['user' => $user]);
+
+        $distinctItemsCount = count($basketItems);
+
+        return new JsonResponse($distinctItemsCount);
     }
 
 

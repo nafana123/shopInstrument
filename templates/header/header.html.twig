@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('style/header/header.css') }}">
+    <script src="{{ asset('js/basket.js') }}"></script>
 </head>
 
 <body>
@@ -105,26 +106,6 @@
                 }
             });
         }
-
-        function fetchCartQuantity(query) {
-            $.ajax({
-                url: '{{ path('basket_quantity') }}',
-                type: 'GET',
-                data: { search: query },
-
-                success: function(response) {
-                        $('#cartItemCount').text(response.quantity);
-                    console.log(response.quantity);
-
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching cart quantity:', error);
-                }
-            });
-        }
-
-
-
         $('#searchInput').on('input', function() {
             let query = $(this).val();
             if (query.length > 1) {
@@ -151,8 +132,7 @@
         $('#searchForm').on('submit', function(e) {
             e.preventDefault();
         });
-
-        fetchCartQuantity();
+        updateBasketCount();
     });
 </script>
 </body>
