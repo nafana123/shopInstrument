@@ -9,6 +9,7 @@
     <title>Document</title>
 </head>
 <body>
+<div class="container-brand">
 <div class="container" >
     <h1 class="zag" id="popBrend">Популярные бренды</h1>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6">
@@ -16,16 +17,15 @@
             {% if img.deleted == 0 %}
         <article class="col" style="padding-bottom: 25px">
             <div class="card">
-                <a href="">
                 <div class="card-bodys">
                     <img src="{{ asset('picture/brand/'  ~ img.img) }}"  class="img-fluid" alt="">
                 </div>
-                </a>
             </div>
         </article>
             {% endif %}
         {% endfor %}
     </div>
+</div>
 </div>
 </body>
 </html>

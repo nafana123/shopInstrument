@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="{{ asset('style/katalog/katalog.css') }}">
@@ -13,7 +12,7 @@
 
 <div class="container" >
     <h1 class="zag" id="katalog">Каталог</h1>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6">
+    <div class="item-container">
         {% for type in types %}
             {% if type.deleted == 0 %}
             <article class="col" style="padding-bottom: 25px;">

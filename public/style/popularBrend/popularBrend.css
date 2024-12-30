@@ -1,4 +1,18 @@
 .card-bodys img{
-    width: 250px;
-    height: 80px;
+    width: 340px;
+    height: 55px;
+}
+.container{
+    margin-bottom: 30px;
+}
+
+@media (max-width: 992px) {
+    .container-brand {
+        display: none;
+    }
+}
+@media (max-width: 576px) {
+    .container-brand {
+        display: none;
+    }
 }
