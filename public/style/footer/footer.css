@@ -1,0 +1,10 @@
+@media (max-width: 992px) {
+    .kasdkd {
+        display: none;
+    }
+}
+@media (max-width: 576px) {
+    .kasdkd {
+        display: none;
+    }
+}

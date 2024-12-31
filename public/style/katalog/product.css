@@ -45,8 +45,7 @@
 }
 
 .card__bottom {
-    display: flex;
-    flex-direction: column;
+
     flex: 1 0 auto;
     padding: 10px;
 }
@@ -205,6 +204,8 @@
     gap: 20px;
 }
 .product-card {
+    display: flex;
+    justify-content: center;
     flex: 1 1 calc(33.333% - 20px);
     box-sizing: border-box;
 }
@@ -241,11 +242,24 @@
     color: #218838;
     border-bottom: 1px solid #218838;
 }
-
+.alert{
+    font-size: 20px;
+    margin-top: -80px;
+}
 
 @media (max-width: 768px) {
-    .product-card {
-        flex: 1 1 calc(50% - 20px);
+    .card {
+        width: 225px;
+        min-height: 150px;
+    }
+    .discount-group__row{
+        gap: 50px
+    }
+    .price-range{
+        flex-direction: column;
+    }
+    .alert{
+        margin-top: 0;
     }
 }
 @media (max-width: 576px) {
