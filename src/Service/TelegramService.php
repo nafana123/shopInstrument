@@ -52,6 +52,10 @@ class TelegramService
         $message .= "💰 Общая сумма: $totalPrice руб.\n";
 
         $telegramChatId = $_ENV['TELEGRAM_CHAT_ID'];
-        $this->api->sendMessage($telegramChatId, $message, 'Markdown');
+        try {
+            $this->api->sendMessage($telegramChatId, $message, 'Markdown');
+        } catch (\Exception $e){
+
+        }
     }
 }

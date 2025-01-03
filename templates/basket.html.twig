@@ -8,70 +8,62 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
     <link rel="stylesheet" href="{{ asset('style/basket/basket.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-        td {
-            font-size: 17px;
-            align-content: center;
-        }
-    </style>
 </head>
 <body>
-<div class="container-fluid" style="margin-left: 160px">
+{% if cartItems is not empty %}
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-12 col-md-7">
             <h2>Корзина</h2>
-            {% if cartItems is not empty %}
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Изображение</th>
-                            <th>Название</th>
-                            <th>Цена за единицу</th>
-                            <th>Количество</th>
-                            <th>Итог</th>
-                            <th>Действия</th>
-                        </tr>
-                        </thead>
-                        <tbody id="cartItemsTableBody">
-                        {% for cartItem in cartItems %}
-                            <tr data-id="{{ cartItem.id }}">
-                                <td><img src="{{ asset('picture/katalog/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" style="max-width: 100px;"></td>
-                                <td>{{ cartItem.name }}</td>
-                                <td>{{ cartItem.price }} руб.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-decrement" data-id="{{ cartItem.id }}" style="opacity: 1;font-size: 20px">-</button>
-                                    <span id="quantity_{{ cartItem.id }}">{{ cartItem.quantity }}</span>
-                                    <button class="btn btn-sm btn-increment" data-id="{{ cartItem.id }}" style="opacity: 1; font-size: 20px">+</button>
-                                </td>
-                                <td id="total_{{ cartItem.id }}" data-price="{{ cartItem.price }}">{{ cartItem.price * cartItem.quantity }} руб.</td>
-                                <td>
-                                    <button class="btn delete-cart-item" data-id="{{ cartItem.id }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" style="color: red" width="25" height="25" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
-                                        </svg>
-                                    </button>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="row">
+                    {% for cartItem in cartItems %}
+                        <div class="card">
+                            <div class="d-flex">
+                                <div class="img">
+                                    <img src="{{ asset('picture/katalog/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" class="card-img-top">
+                                </div>
+                                <div class="con-data d-flex flex-column justify-content-between ms-3">
+                                    <div class="con-set d-flex justify-content-between align-items-center">
+                                        <h5 class="card-title">{{ cartItem.name }}</h5>
+                                        <button class="btn delete-cart-item" data-id="{{ cartItem.id }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" style="color: red"  fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <button class="btn btn-sm btn-decrement" data-id="{{ cartItem.id }}">-</button>
+                                                <span id="quantity_{{ cartItem.id }}">{{ cartItem.quantity }}</span>
+                                                <button class="btn btn-sm btn-increment" data-id="{{ cartItem.id }}">+</button>
+                                            </div>
+                                            <div class="container-price">
+                                                <h5 class="mb-0" id="total_{{ cartItem.id }}" data-price="{{ cartItem.price }}">
+                                                    {{ cartItem.price * cartItem.quantity }} руб.
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endfor %}
                 </div>
-            {% else %}
-                <p>Ваша корзина пуста.</p>
-            {% endif %}
         </div>
-        {% if cartItems is not empty %}
-            <div class="col-md-3">
+
+            <div class="col-12 col-md-3">
                 <h4 class="card-title mt-4">Сумма заказов</h4>
                 <div class="card mt-3">
                     <div class="card-body">
                         <p class="card-text" style="display: flex; justify-content: space-between;">
                             <span>Итого</span>
-                            <span id="totalPrice" style="font-size: 23px">0 руб.</span>
+                            <span id="totalPrice"  class="totalPrice">0 руб.</span>
                         </p>
                     </div>
-                    <a class="navbar-brand col-2" href="{{ path('infopage') }}">
+                    <a class="navbar-brand col-12" href="{{ path('infopage') }}">
                         <p class="inf">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
                                 <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
@@ -80,175 +72,19 @@
                         </p>
                     </a>
                 </div>
-                    <a href="#" class="btn btn-success mt-2" style="width: 100%; height: 50px; align-content: center;" data-bs-toggle="modal" data-bs-target="#exampleModal">Оформить заказ</a>
-            </div>
-        {% endif %}
-    </div>
-</div>
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: -80px">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Подтверждение заказа</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="container">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <p class="text-end fw-bold">{{ "Дата заказа: " ~ "now"|date('d.m.Y') }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <table class="table" id="modalTable">
-                                <thead>
-                                <tr>
-                                    <th>Изображение</th>
-                                    <th>Название</th>
-                                    <th>Цена</th>
-                                    <th>Количество</th>
-                                    <th>Сумма</th>
-                                </tr>
-                                </thead>
-                                <tbody id="modalCartItemsTableBody">
-                                {% for cartItem in cartItems %}
-                                    <tr data-id="{{ cartItem.id }}">
-                                        <td><img src="{{ asset('picture/katalog/' ~ cartItem.img) }}" alt="{{ cartItem.name }}" style="max-width: 100px;"></td>
-                                        <td>{{ cartItem.name }}</td>
-                                        <td>{{ cartItem.price }} руб.</td>
-                                        <td>{{ cartItem.quantity }}</td>
-                                        <td>{{ cartItem.price * cartItem.quantity }} руб.</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer" style="justify-content: space-between;">
-                <h5>Итоговая сумма:</h5>
-                <span id="modalTotalPrice" style="font-size: 23px;">0 руб.</span>
-            </div>
-            <div class="modal-footer" style="justify-content: center;">
                 <form action="{{ path('check') }}" method="POST">
-                    <button type="submit" class="btn btn-success" style="width: 430px; align-content: center; height: 50px">Подтвердить заказ</button>
+                    <button type="submit" class="btn btn-success" style="width: 100%; height: 50px; align-content: center;">Оформить заказ</button>
                 </form>
             </div>
-        </div>
     </div>
 </div>
+{% else %}
+    <p>Ваша корзина пуста.</p>
+{% endif %}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>
-    $(document).ready(function() {
-        function updateTotalPrice() {
-            let totalPrice = 0;
-
-            $('#cartItemsTableBody tr').each(function() {
-                let totalElement = $(this).find('td[id^="total_"]');
-                let totalText = totalElement.text().trim().replace(' руб.', '').replace(',', '.');
-
-                let total = parseFloat(totalText);
-                if (!isNaN(total)) {
-                    totalPrice += total;
-                }
-            });
-
-            $('#totalPrice').text(totalPrice.toFixed(2) + ' руб.');
-            $('#modalTotalPrice').text(totalPrice.toFixed(2) + ' руб.');
-        }
-
-
-
-
-
-        function updateModalContent() {
-            var modalBody = $('#exampleModal .modal-body');
-            var tableBody = modalBody.find('#modalCartItemsTableBody');
-            tableBody.empty();
-
-            $('#cartItemsTableBody tr').each(function() {
-                var row = $(this).clone();
-                row.find('.btn-increment, .btn-decrement').remove();
-                row.find('td').last().remove();
-                tableBody.append(row);
-            });
-        }
-
-
-
-        $(document).on('click', '.delete-cart-item', function() {
-            var button = $(this);
-            var itemId = button.data('id');
-
-            $.ajax({
-                url: '/basket/delete/' + itemId,
-                type: 'DELETE',
-                success: function(response) {
-                    button.closest('tr').remove();
-                    updateTotalPrice();
-                    updateModalContent();
-                    updateBasketCount();
-
-                },
-            });
-        });
-
-        $(document).on('click', '.btn-increment', function() {
-            var button = $(this);
-            var itemId = button.data('id');
-
-            $.ajax({
-                url: '/basket/increment/' + itemId,
-                type: 'POST',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        var quantityElement = $('#quantity_' + itemId);
-                        var priceElement = $('#total_' + itemId);
-                        var newQuantity = response.quantity;
-                        var unitPrice = parseFloat(priceElement.data('price'));
-                        quantityElement.text(newQuantity);
-                        priceElement.text((unitPrice * newQuantity) + ' руб.');
-                        updateTotalPrice();
-                        updateModalContent();
-                    }
-                },
-            });
-        });
-
-        $(document).on('click', '.btn-decrement', function() {
-            var button = $(this);
-            var itemId = button.data('id');
-
-            $.ajax({
-                url: '/basket/decrement/' + itemId,
-                type: 'POST',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        var quantityElement = $('#quantity_' + itemId);
-                        var priceElement = $('#total_' + itemId);
-                        var newQuantity = response.quantity;
-                        var unitPrice = parseFloat(priceElement.data('price'));
-                        quantityElement.text(newQuantity);
-                        priceElement.text((unitPrice * newQuantity) + ' руб.');
-                        updateTotalPrice();
-                        updateModalContent();
-                    }
-                },
-            });
-        });
-
-        updateTotalPrice();
-
-        $('#exampleModal').on('show.bs.modal', function () {
-            updateModalContent();
-        });
-    });
-</script>
+<script src="{{ asset('js/basket.js') }}"></script>
 
 </body>
 </html>
