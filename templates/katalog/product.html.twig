@@ -125,37 +125,8 @@
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('.add-to-basket').on('click', function(e) {
-            e.preventDefault();
+<script src="{{ asset('js/product.js') }}"></script>
 
-            var button = $(this);
-            var productId = button.data('product-id');
-            var addedText = button.siblings('.added-to-basket-text');
-
-            $.ajax({
-                url: '{{ path('basket') }}',
-                type: 'POST',
-                data: { id: productId },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        button.hide();
-                        addedText.show();
-                        updateBasketCount();
-
-                    } else {
-                        alert('Ошибка при добавлении товара в корзину. Попробуйте снова.');
-                    }
-                },
-                error: function() {
-                    alert('Ошибка при добавлении товара в корзину. Попробуйте снова.');
-                }
-            });
-        });
-    });
-
-</script>
 </body>
 </html>
 {% include 'footer/footer.html.twig' %}
