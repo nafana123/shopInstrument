@@ -46,11 +46,6 @@ class Product
     #[ORM\OneToMany(targetEntity: ProductCharacteristics::class, mappedBy: 'product')]
     private Collection $characteristics;
 
-    #[ORM\OneToMany(targetEntity: Checks::class, mappedBy: 'product')]
-    private Collection $checks;
-
-
-
     public function __construct()
     {
         $this->basket = new ArrayCollection();
@@ -58,9 +53,6 @@ class Product
         $this->characteristics = new ArrayCollection();
 
         $this->test = new ArrayCollection();
-
-
-        $this->checks = new ArrayCollection();
     }
 
 

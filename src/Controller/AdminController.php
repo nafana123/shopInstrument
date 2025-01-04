@@ -9,7 +9,6 @@ use App\Entity\Product;
 use App\Entity\ProductCharacteristics;
 use App\Entity\Type;
 use App\Repository\ChecksRepository;
-use App\Repository\InfoProductRepository;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -32,10 +31,9 @@ class AdminController extends AbstractController
 
 
 
-    public function __construct(UsersRepository $usersRepository, InfoProductRepository $infoProductRepository, ChecksRepository $checksRepository, EntityManagerInterface $entityManager)
+    public function __construct(UsersRepository $usersRepository, ChecksRepository $checksRepository, EntityManagerInterface $entityManager)
     {
         $this->usersRepository = $usersRepository;
-        $this->infoProductRepository = $infoProductRepository;
         $this->checksRepository = $checksRepository;
         $this->entityManager = $entityManager;
     }
