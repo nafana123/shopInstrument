@@ -3,7 +3,6 @@ parameters:
     katalog_directorys: '%kernel.project_dir%/public/picture/product'
     brand_directory: '%kernel.project_dir%/public/picture/brand'
 
-
 services:
     App\Security\AccessDeniedRedirectHandler:
         arguments:
@@ -21,5 +20,10 @@ services:
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Kernel.php'
+
+    # Слушатель ошибок для обработки 404 и других исключений
+    App\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, priority: 100 }
 
     App\Entity\Users: ~
