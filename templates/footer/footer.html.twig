@@ -51,16 +51,16 @@
                         Продукт
                     </h6>
                     <p>
-                        <a href="{{ path('product', {'typeId': 1, 'name': 'Бетономешалкa'}) }}" class="text-reset">Бетономешалка</a>
+                        <a href="{{ path('product', {'typeId': 1, 'name': 'Бетономешалкa'}) }}" class="nav-link">Бетономешалка</a>
                     </p>
                     <p>
-                        <a  href="{{ path('product', {'typeId': 2, 'name': 'Электропила'}) }}" class="text-reset">Бензопила</a>
+                        <a  href="{{ path('product', {'typeId': 2, 'name': 'Электропила'}) }}" class="nav-link">Бензопила</a>
                     </p>
                     <p>
-                        <a  href="{{ path('product', {'typeId': 5, 'name': 'Мотоблок'}) }}" class="text-reset">Мотоблок</a>
+                        <a  href="{{ path('product', {'typeId': 5, 'name': 'Мотоблок'}) }}" class="nav-link">Мотоблок</a>
                     </p>
                     <p>
-                        <a  href="{{ path('product', {'typeId': 4, 'name': 'Мойка'}) }}" class="text-reset">Мойка</a>
+                        <a  href="{{ path('product', {'typeId': 4, 'name': 'Мойка'}) }}" class="nav-link">Мойка</a>
                     </p>
                 </div>
                 <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4 d-none d-md-block">
@@ -68,16 +68,16 @@
                         Информация
                     </h6>
                     <p>
-                        <a href="#katalog" class="text-reset">Каталог</a>
+                        <a class="nav-link" href="{{ path('mainpage') }}#katalog">Каталог</a>
                     </p>
                     <p>
-                        <a href="{{ path('check') }}" class="text-reset">Личный кабинет</a>
+                        <a class="nav-link" href="{{ path('mainpage') }}#popular">Популярные товары</a>
                     </p>
                     <p>
-                        <a href="#popBrend" class="text-reset">Бренды</a>
+                        <a class="nav-link" href="{{ path('mainpage') }}e#popBrend">Бренды</a>
                     </p>
                     <p>
-                        <a href="{{ path('infopage') }}" class="text-reset" >Контакты</a>
+                        <a class="nav-link" href="{{ path('infopage') }}">Контакты</a>
                     </p>
                 </div>
 

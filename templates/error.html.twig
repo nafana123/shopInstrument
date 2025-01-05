@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('style/error/error.css') }}">
+</head>
+<body>
+{% if status_code == 404 %}
+    <h1>{{ status_code }}</h1>
+    <p>Упс! Страница, которую вы ищете, не найдена.</p>
+    <a class="rollback" href="{{ path('mainpage') }}">Вернуться на главную</a>
+{% else %}
+    <h1>{{ status_code }}</h1>
+    <p>Упс! Произошла ошибка.</p>
+    <p>Мы уже работаем над её решением. Пожалуйста, попробуйте позже.</p>
+{% endif %}
+</body>
+</html>
