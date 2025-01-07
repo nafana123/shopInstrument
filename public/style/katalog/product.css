@@ -253,7 +253,9 @@
 .card__price--common{
     font-size: 18px;
 }
-
+.btn.btn-success.add-to-basket{
+    width: 100%;
+}
 @media (max-width: 768px) {
     .card {
         width: 225px;
@@ -274,22 +276,22 @@
         width: 121px;
     }
     .card__price--discount::before{
-        font-size: 11px;
+        font-size: 14px;
     }
     .card__price--common::before{
-        font-size: 10px;
+        font-size: 12px;
     }
     .card__price--discount{
-        font-size: 11px;
+        font-size: 17px;
     }
     .card__price--common{
-        font-size: 11px;
+        font-size: 15px;
     }
     .card__title{
-        font-size: 10px;
+        font-size: 14px;
     }
     .aa{
-        font-size: 8px;
+        font-size: 13px;
     }
     .card__top {
         flex: 0 0 100px;
@@ -297,6 +299,9 @@
     .card__label{
         font-size: 8px;
         bottom: 0;
+    }
+    .btn.btn-success.add-to-basket{
+        font-size: 13px;
     }
 }
 @media (max-width: 375px) {
@@ -307,19 +312,19 @@
         font-size: 11px;
     }
     .card__price--common::before{
-        font-size: 10px;
+        font-size: 9px;
     }
     .card__price--discount{
-        font-size: 11px;
+        font-size: 12px;
     }
     .card__price--common{
-        font-size: 11px;
+        font-size: 9px;
     }
     .card__title{
-        font-size: 10px;
+        font-size: 12px;
     }
     .aa{
-        font-size: 8px;
+        font-size: 9px;
     }
     .card__top {
         flex: 0 0 100px;
@@ -327,5 +332,8 @@
     .card__label{
         font-size: 8px;
         bottom: 0;
+    }
+    .btn.btn-success.add-to-basket{
+        font-size: 8px;
     }
 }
