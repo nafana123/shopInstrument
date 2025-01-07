@@ -22,7 +22,7 @@
         </ol>
     </nav>
     <div class="row">
-        <div class="col-md-3 filter-container">
+        <div class="col-md-3 filter-container d-none d-md-block">
             {% block filter_form %}
                 <form method="get" action="{{ path('form_filteras') }}">
                     <input type="hidden" name="typeId" value="{{ typeId }}">
@@ -63,13 +63,21 @@
                 </form>
             {% endblock %}
         </div>
+
+        <div class="col-md-3 d-block d-md-none">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#sortModal" class="sort-link">
+                <i class="bi bi-arrow-up-down" style="font-size: 1.5em; color: #007bff;"></i>
+                <span id="sort-text"></span>
+            </a>
+        </div>
+
+
         <div class="col-md-9" style="align-content: center">
             {% if products is empty %}
-            <div class="no-results" style="text-align: center" >
+            <div class="no-results" style="text-align: center">
                 <div class="alert" role="alert">
                     <span style="text-align: center">Ничего не найдено</span><br>
                     Попробуйте сбросить или изменить фильтры поиска.
-
                 </div>
                 <form method="get" action="{{ path('form_filteras') }}">
                     <input type="hidden" name="typeId" value="{{ typeId }}">
@@ -124,6 +132,32 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="sortModal" tabindex="-1" aria-labelledby="sortModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sortModalLabel">Сортировка товаров</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="get" action="{{ path('form_filteras') }}">
+                    <input type="hidden" name="typeId" value="{{ typeId }}">
+                    <div class="mb-3">
+                        <label for="sort-price" class="form-label">Выберите способ сортировки:</label>
+                        <select id="sort-price" name="sort_price" class="form-select" onchange="updateSortText(this)">
+                            <option value="asc" {% if app.request.query.get('sort_price') == 'asc' %}selected{% endif %}>По возрастанию</option>
+                            <option value="desc" {% if app.request.query.get('sort_price') == 'desc' %}selected{% endif %}>По убыванию</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Применить сортировку</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ asset('js/product.js') }}"></script>
 

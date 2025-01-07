@@ -49,3 +49,20 @@ $(document).ready(function() {
         });
     });
 });
+function updateSortText(selectElement) {
+    const sortText = document.getElementById("sort-text");
+    const selectedOption = selectElement.options[selectElement.selectedIndex].text;
+    sortText.textContent = selectedOption;
+}
+document.addEventListener("DOMContentLoaded", function() {
+    const selectedSort = document.querySelector('select[name="sort_price"]').value;
+    const sortText = document.getElementById("sort-text");
+
+    if (selectedSort === "asc") {
+        sortText.textContent = "⮃ По возрастанию";
+    } else if (selectedSort === "desc") {
+        sortText.textContent = "⮃ По убыванию";
+    } else {
+        sortText.textContent = "⮃ По умолчанию";
+    }
+});
