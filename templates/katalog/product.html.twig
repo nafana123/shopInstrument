@@ -90,10 +90,10 @@
                                     </div>
                                     <div class="card__bottom">
                                         <div class="card__prices">
-                                            <div class="card__price card__price--discount" style="font-size: 22px">{{ product.amount }}</div>
-                                            <div class="card__price card__price--common" style="font-size: 18px">{{ product.noSale }}</div>
+                                            <div class="card__price card__price--discount">{{ product.amount }}</div>
+                                            <div class="card__price card__price--common">{{ product.noSale }}</div>
                                         </div>
-                                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" style="font-size: 19px; text-decoration: none" class="card__title">
+                                        <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__title">
                                             {{ product.name }}
                                         </a>
                                         {% if app.user is not empty %}

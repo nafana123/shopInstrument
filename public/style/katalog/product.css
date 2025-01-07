@@ -97,9 +97,10 @@
     display: block;
     margin-bottom: 10px;
     font-weight: 400;
-    font-size: 17px;
+    font-size: 19px;
     line-height: 150%;
     color: #414141;
+    text-decoration: none;
 }
 
 .card__title:hover {
@@ -246,6 +247,12 @@
     font-size: 20px;
     margin-top: -80px;
 }
+.card__price--discount{
+    font-size: 22px;
+}
+.card__price--common{
+    font-size: 18px;
+}
 
 @media (max-width: 768px) {
     .card {
@@ -262,8 +269,63 @@
         margin-top: 0;
     }
 }
-@media (max-width: 576px) {
+@media (max-width: 425px) and (min-width: 376px){
     .product-card {
-        flex: 1 1 100%;
+        width: 121px;
+    }
+    .card__price--discount::before{
+        font-size: 11px;
+    }
+    .card__price--common::before{
+        font-size: 10px;
+    }
+    .card__price--discount{
+        font-size: 11px;
+    }
+    .card__price--common{
+        font-size: 11px;
+    }
+    .card__title{
+        font-size: 10px;
+    }
+    .aa{
+        font-size: 8px;
+    }
+    .card__top {
+        flex: 0 0 100px;
+    }
+    .card__label{
+        font-size: 8px;
+        bottom: 0;
+    }
+}
+@media (max-width: 375px) {
+    .product-card {
+        width: 104px;
+    }
+    .card__price--discount::before{
+        font-size: 11px;
+    }
+    .card__price--common::before{
+        font-size: 10px;
+    }
+    .card__price--discount{
+        font-size: 11px;
+    }
+    .card__price--common{
+        font-size: 11px;
+    }
+    .card__title{
+        font-size: 10px;
+    }
+    .aa{
+        font-size: 8px;
+    }
+    .card__top {
+        flex: 0 0 100px;
+    }
+    .card__label{
+        font-size: 8px;
+        bottom: 0;
     }
 }
