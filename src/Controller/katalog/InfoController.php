@@ -28,7 +28,7 @@ class InfoController extends AbstractController
         $products = $entityManager->getRepository(Product::class)->findBy(['types' => $typeId]);
         $similarProducts = array_filter($products, fn($similarProduct) => $similarProduct->getId() !== $product->getId());
 
-        $infoProd = $entityManager->getRepository(Product::class)->findBy([], ['amount' => 'DESC'], 4);
+        $popularProducts = $entityManager->getRepository(Product::class)->findBy([], ['amount' => 'DESC'], 4);
 
         $basketItems = $entityManager->getRepository(Basket::class)->findBy(['user' => $user]);
         $basketProductIds = array_map(fn($item) => $item->getProduct()->getId(), $basketItems);
@@ -36,7 +36,7 @@ class InfoController extends AbstractController
         return $this->render('katalog/infoProduct.html.twig', [
             'product' => $product,
             'images' => $images,
-            'infoProd' => $infoProd,
+            'popularProducts' => $popularProducts,
             'products' => $similarProducts,
             'basketProductIds' => $basketProductIds,
             'productCharacteristics' => $productCharacteristics,

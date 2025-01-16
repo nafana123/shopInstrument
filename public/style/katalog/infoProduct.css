@@ -244,13 +244,11 @@
     font-weight: bold;
     color: #28a745;
     text-decoration: none;
-    border-bottom: 1px dotted #28a745;
     padding-bottom: 2px;
 }
 
 .added-to-basket-text a:hover {
     color: #218838;
-    border-bottom: 1px solid #218838;
 }
 .product-info {
     display: flex;
@@ -266,4 +264,212 @@
 .attribute1 {
     text-align: left;
     margin-right: 500px;
+}
+.description h4,
+.description h1{
+    margin-left: 10%;
+}
+@media screen and (max-width: 768px) {
+    .containers {
+        display: flex;
+        flex-direction: column; /* Изменим направление на колонку, чтобы блоки шли друг под другом */
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .carousel-thumbnails {
+        display: block;
+        margin-left: -20px;
+        text-align: center;
+    }
+
+    .carousel-thumbnail {
+        width: 50px;
+        height: 50px;
+    }
+
+    h2.product-name {
+        font-size: 20px;
+        margin-top: -35px;
+    }
+
+    #container-1 {
+        order: 2; /* Контейнер 1 будет вторым */
+    }
+
+    #container-2 {
+        order: 1; /* Контейнер 2 будет первым */
+    }
+    #container-3 {
+        order: 3; /* Контейнер 2 будет первым */
+    }
+
+    .main-image img{
+        max-width: 200px;
+        max-height: 200px;
+        margin-left: 12px;
+    }
+    .price-stock {
+        display: flex; /* Включаем flexbox */
+        justify-content: space-around /* Располагаем элементы вертикально */
+    }
+
+    .price-stock .stock, .price-stock .nostock {
+        order: 1; /* Ставим p (stock или nostock) первым */
+    }
+
+    .price-stock h2 {
+        order: 2; /* Ставим h2 вторым */
+    }
+
+    p.inf{
+        font-size: 13px;
+    }
+
+    .product-buttons {
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-success {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .secondcont {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .description {
+        padding: 10px;
+        margin: 0;
+        width: 100%;
+    }
+    .pre {
+        font-size: 14px;
+        margin-top: 0;
+        margin-left: 3%;
+    }
+
+    .product-info {
+        margin-bottom:10px;
+        align-items: stretch;
+    }
+
+    .attribute {
+        margin-bottom: 5px;
+        margin-left:10px;
+    }
+    .attribute1{
+        margin-left:30px;
+    }
+    .attribute p{
+        width: 100px;
+        font-size: 13px;
+        text-align: left;
+    }
+    .attribute1 p{
+        width: 150px;
+        font-size: 13px;
+        text-align: right;
+    }
+    .description h1{
+        margin-left: 3%;
+        font-size: 20px;
+
+    }
+    .description h4{
+        margin-left: 3%;
+        font-size: 18px;
+    }
+
+
+    .card {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .card__top {
+        flex: 0 0 220px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card__image > img {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+    }
+
+    .card__price {
+        font-size: 18px;
+    }
+
+    .add-to-basket {
+        width: 100%;
+        font-size: 18px;
+    }
+    @media screen and (min-width: 375px) and (max-width: 424px) {
+        .main-image img{
+            max-width: 200px;
+            max-height: 200px;
+            margin-left: 40px;
+        }
+        .attribute p{
+            font-size: 14px;
+            text-align: left;
+        }
+        .attribute1 p{
+            width: 200px;
+            font-size: 14px;
+            text-align: right;
+        }
+    }
+    @media screen and (min-width: 425px) and (max-width: 767px) {
+        .main-image img{
+            max-width: 200px;
+            max-height: 200px;
+            margin-left: 55px;
+        }
+        .attribute p{
+            font-size: 14px;
+            text-align: left;
+        }
+        .attribute p{
+            width: 200px;
+        }
+        .attribute1 p{
+            font-size: 14px;
+            text-align: right;
+        }
+        p.inf{
+            font-size: 14px;
+        }
+    }
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+        .main-image img{
+            align-items: center;
+            max-width: 300px;
+            max-height: 300px;
+            margin-left: 185px;
+        }
+        .attribute p{
+            font-size: 14px;
+            text-align: left;
+        }
+        .attribute p{
+            width: 350px;
+            font-size: 16px;
+            margin-left: 13px;
+
+        }
+        .attribute1 p{
+            font-size: 16px;
+            text-align: right;
+        }
+        p.inf{
+            font-size: 14px;
+        }
+    }
 }

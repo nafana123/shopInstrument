@@ -20,11 +20,11 @@ class MainController extends AbstractController
     {
         $types = $entityManager->getRepository(Type::class)->findAll();
         $imgs = $entityManager->getRepository(PopularBrend::class)->findAll();
-        $popularProduct = $entityManager->getRepository(Product::class)->findBy([], ['amount' => 'DESC'], 4);
+        $popularProducts = $entityManager->getRepository(Product::class)->findBy([], ['amount' => 'DESC'], 4);
 
         return $this->render('base.html.twig', [
             'types' => $types,
-            'popularProduct' => $popularProduct,
+            'popularProducts' => $popularProducts,
             'imgs' => $imgs,
         ]);
     }

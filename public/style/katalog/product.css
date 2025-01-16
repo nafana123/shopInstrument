@@ -235,13 +235,11 @@
     font-weight: bold;
     color: #28a745;
     text-decoration: none;
-    border-bottom: 1px dotted #28a745;
     padding-bottom: 2px;
 }
 
 .added-to-basket-text a:hover {
     color: #218838;
-    border-bottom: 1px solid #218838;
 }
 .alert{
     font-size: 20px;

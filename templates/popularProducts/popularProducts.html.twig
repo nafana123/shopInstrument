@@ -1,24 +1,14 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ asset('style/popularProducts/popularProducts.css') }}">
-</head>
-<body>
 <div class="container">
     <h1 class="zag" id="popular">Популярные товары</h1>
     <div class="products-grid">
-        {% for popularProducts in popularProduct %}
+        {% for popularProduct in popularProducts %}
             <article class="product-card">
-                <a href="{{ path('info_product', {'typeId': popularProducts.types, 'name': popularProducts.name, 'id': popularProducts.id}) }}" class="card__image">
+                <a href="{{ path('info_product', {'typeId': popularProduct.types, 'name': popularProduct.name, 'id': popularProduct.id}) }}" class="card__image">
                     <div class="cards">
-                        <img src="{{ asset('picture/katalog/' ~ popularProducts.img) }}" class="img-fluid" alt="{{ popularProducts.name }}">
+                        <img src="{{ asset('picture/katalog/' ~ popularProduct.img) }}" class="img-fluid" alt="{{ popularProduct.name }}">
                         <div class="card-bodys text-center">
-                            <h5 class="card-titles">{{ popularProducts.name }}</h5>
-                            <p class="card-texts">Цена: {{ popularProducts.amount }} ₽</p>
+                            <h5 class="card-titles">{{ popularProduct.name }}</h5>
+                            <p class="card-texts">Цена: {{ popularProduct.amount }} ₽</p>
                         </div>
                     </div>
                 </a>
@@ -26,5 +16,3 @@
         {% endfor %}
     </div>
 </div>
-</body>
-</html>
