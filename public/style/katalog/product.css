@@ -202,7 +202,6 @@
 .products-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
 }
 .product-card {
     display: flex;
@@ -265,14 +264,49 @@
     transition: color 0.3s, transform 0.3s;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 769px) and (max-width: 991px){
+    .products-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Три одинаковые колонки */
+        gap: 20px;
+    }
     .product-card {
-        flex: 1 1 calc(33.333% - 20px);
+        display: flex;
+        justify-content: center;
+        box-sizing: border-box;
         padding-left: 0;
     }
+
     .card {
-        width: 225px;
-        min-height: 150px;
+        width: 100%; /* карточка будет занимать всю доступную ширину в колонке */
+        min-height: 150px; /* минимальная высота карточки */
+    }
+    .discount-group__row{
+        gap: 50px
+    }
+    .price-range{
+        flex-direction: column;
+    }
+    .alert{
+        margin-top: 0;
+    }
+}
+@media (max-width: 768px) {
+    .products-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Три одинаковые колонки */
+        gap: 20px;
+    }
+    .product-card {
+        display: flex;
+        justify-content: center;
+        box-sizing: border-box;
+        padding-left: 0;
+    }
+
+    .card {
+        width: 100%; /* карточка будет занимать всю доступную ширину в колонке */
+        min-height: 150px; /* минимальная высота карточки */
     }
     .discount-group__row{
         gap: 50px
@@ -285,10 +319,21 @@
     }
 }
 @media (max-width: 425px) and (min-width: 376px){
+    .products-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Три одинаковые колонки */
+        gap: 20px;
+    }
     .product-card {
-        width: 121px;
-        flex: 1 1 calc(33.333% - 20px);
+        display: flex;
+        justify-content: center;
+        box-sizing: border-box;
         padding-left: 0;
+    }
+
+    .card {
+        width: 100%; /* карточка будет занимать всю доступную ширину в колонке */
+        min-height: 150px; /* минимальная высота карточки */
     }
     .card__price--discount::before{
         font-size: 14px;
@@ -320,37 +365,60 @@
     }
 }
 @media (max-width: 375px) {
+    .products-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Три одинаковые колонки */
+        gap: 20px;
+    }
+
     .product-card {
-        width: 104px;
-        flex: 1 1 calc(33.333% - 20px);
+        display: flex;
+        justify-content: center;
+        box-sizing: border-box;
         padding-left: 0;
     }
-    .card__price--discount::before{
+
+    .card {
+        width: 100%; /* карточка будет занимать всю доступную ширину в колонке */
+        min-height: 150px; /* минимальная высота карточки */
+    }
+
+    .card__price--discount::before {
         font-size: 11px;
     }
-    .card__price--common::before{
+
+    .card__price--common::before {
         font-size: 9px;
     }
-    .card__price--discount{
+
+    .card__price--discount {
         font-size: 12px;
     }
-    .card__price--common{
+
+    .card__price--common {
         font-size: 9px;
     }
-    .card__title{
+
+    .card__title {
         font-size: 12px;
     }
-    .aa{
+
+    .aa {
         font-size: 9px;
     }
+
     .card__top {
         flex: 0 0 100px;
     }
-    .card__label{
+
+    .card__label {
         font-size: 8px;
         bottom: 0;
     }
-    .btn.btn-success.add-to-basket{
+
+    .btn.btn-success.add-to-basket {
         font-size: 8px;
     }
 }
+
+

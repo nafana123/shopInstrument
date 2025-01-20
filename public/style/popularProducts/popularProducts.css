@@ -101,3 +101,27 @@
         margin-top: 10px;
     }
 }
+@media (max-width: 767px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cards {
+        width: 100%;
+        height: 190px;
+    }
+
+    h5.card-titles {
+        font-size: 11px;
+    }
+
+    .card-bodys .card-texts {
+        font-size: 11px;
+    }
+
+    .cards img {
+        max-width: 70%;
+        object-fit: contain;
+        margin-top: 10px;
+    }
+}

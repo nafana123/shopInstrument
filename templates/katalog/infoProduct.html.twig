@@ -8,6 +8,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ asset('style/katalog/infoProduct.css') }}">
+    <link rel="stylesheet" href="{{ asset('style/katalog/product.css') }}">
     <script src="{{ asset('js/basket.js') }}"></script>
     <title>{% block title %}onlineshop{% endblock %}</title>
     {% block stylesheets %}
@@ -103,11 +104,11 @@
 
 <div class="container">
  <h1 style="margin-top: 50px">Схожие товары</h1>
-    <div class="row justify-content-start">
+    <div class="products-container">
         {% for product in products %}
             {% if product.deleted == 0 %}
-                <article class="col-sm-6 col-md-4 col-lg-3">
-                    <div class="card">
+                <div class="product-card">
+                    <article class="card">
                         <div class="card__top">
                             <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__image">
                                 <img src="{{ asset('picture/katalog/' ~ product.img) }}" class="card-img-top" alt="{{ product.name }}">
@@ -116,20 +117,20 @@
                         </div>
                         <div class="card__bottom">
                             <div class="card__prices">
-                                <div class="card__price card__price--discount" style="font-size: 25px">{{ product.amount }}</div>
-                                <div class="card__price card__price--common" style="font-size: 22px">{{ product.noSale }}</div>
+                                <div class="card__price card__price--discount">{{ product.amount }}</div>
+                                <div class="card__price card__price--common">{{ product.noSale }}</div>
                             </div>
-                            <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" style="font-size: 19px; text-decoration: none" class="card__title">
+                            <a href="{{ path('info_product', {'typeId': product.types, 'name': product.name, 'id': product.id}) }}" class="card__title">
                                 {{ product.name }}
                             </a>
                             {% if app.user is not empty %}
-                                <div class="product-buttons" style="text-align: center">
+                                <div class="product-buttons">
                                     {% if product.id in basketProductIds %}
                                         <div class="added-to-basket-text">
                                             <a href="{{ path('basket') }}">Товар добавлен в корзину</a>
                                         </div>
                                     {% else %}
-                                        <button data-product-id="{{ product.id }}" class="btn btn-success add-to-basket" style="width: 100%">Добавить в корзину</button>
+                                        <button data-product-id="{{ product.id }}" class="btn btn-success add-to-basket">Добавить в корзину</button>
                                         <div class="added-to-basket-text" style="display: none;">
                                             <a href="{{ path('basket') }}">Товар добавлен в корзину</a>
                                         </div>
@@ -141,8 +142,8 @@
                                 </div>
                             {% endif %}
                         </div>
-                    </div>
-                </article>
+                    </article>
+                </div>
             {% endif %}
         {% endfor %}
     </div>

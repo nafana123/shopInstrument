@@ -2,7 +2,7 @@
     <h1 class="zag" id="popular">Популярные товары</h1>
     <div class="products-grid">
         {% for popularProduct in popularProducts %}
-            <article class="product-card">
+            <article class="product-cardes">
                 <a href="{{ path('info_product', {'typeId': popularProduct.types, 'name': popularProduct.name, 'id': popularProduct.id}) }}" class="card__image">
                     <div class="cards">
                         <img src="{{ asset('picture/katalog/' ~ popularProduct.img) }}" class="img-fluid" alt="{{ popularProduct.name }}">
