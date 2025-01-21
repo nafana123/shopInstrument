@@ -319,6 +319,9 @@
     }
 }
 @media (max-width: 425px) and (min-width: 376px){
+    .added-to-basket-text a{
+        font-size: 13px;
+    }
     .products-container {
         display: grid;
         grid-template-columns: repeat(2, 1fr); /* Три одинаковые колонки */
@@ -369,6 +372,9 @@
         display: grid;
         grid-template-columns: repeat(2, 1fr); /* Три одинаковые колонки */
         gap: 20px;
+    }
+    .added-to-basket-text a{
+        font-size: 10px;
     }
 
     .product-card {

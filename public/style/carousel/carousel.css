@@ -59,7 +59,7 @@ button.carousel-control-next{
 @media (max-width: 480px) {
     .carousel-item img {
         width: 100%;
-        max-height: 250px; /* Более низкая высота для очень маленьких экранов */
+        max-height: 200px; /* Более низкая высота для очень маленьких экранов */
     }
     button.carousel-control-prev,
     button.carousel-control-next {

@@ -61,6 +61,11 @@ p.card-text{
     p.inf{
         font-size: 15px;
     }
+    .col-12.col-md-3 {
+        flex: 0 0 41.66667%;
+        max-width: 41.66667%;
+    }
+
 }
 @media (max-width: 1024px) and (min-width: 992px){
     .totalPrice{
@@ -90,8 +95,7 @@ p.card-text{
         height: 45px;
     }
     .col-12.col-md-3 {
-        flex: 0 0 41.66667%;
-        max-width: 41.66667%;
+        flex: 0 0 51.66667%;
     }
 
 }
