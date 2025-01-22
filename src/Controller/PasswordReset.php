@@ -20,10 +20,7 @@ class PasswordReset extends AbstractController
         $this->entityManager = $entityManager;
         $this->passwordHasher = $passwordHasher;
     }
-
-    /**
-     * @Route("/registration/password-reset", name="password_reset", methods={"GET","POST"})
-     */
+    
     public function Reset(Request $request): Response
     {
         if ($request->isMethod('POST')) {

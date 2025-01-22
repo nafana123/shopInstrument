@@ -58,10 +58,11 @@
     <a class="nav-link active" href="{{ path('mainpage') }}">На главную страницу</a>
     <div class="header">
         <h3 class="sign-in">Регистрация</h3>
-
+        <a class="nav-link active" href="{{ path('vhod') }}">
         <div class="button">
-            <a class="nav-link active" href="{{ path('vhod') }}">Войти</a>
+            Войти
         </div>
+        </a>
     </div>
     <div class="clear"></div>
     <form action="{{ path('registration') }}" method="POST">
@@ -112,22 +113,6 @@
     </form>
 </div>
 
-
+<script src="{{ asset('js/form.js') }}"></script>
 </body>
-<script>
-    document.getElementById('togglePassword').addEventListener('click', function (e) {
-        const passwordInput = document.getElementById('password');
-        const passwordType = passwordInput.getAttribute('type');
-
-        if (passwordType === 'password') {
-            passwordInput.setAttribute('type', 'text');
-        } else {
-            passwordInput.setAttribute('type', 'password');
-        }
-
-        this.querySelector('svg').classList.toggle('bi-eye');
-        this.querySelector('svg').classList.toggle('bi-eye-slash');
-    });
-</script>
-
 </html>

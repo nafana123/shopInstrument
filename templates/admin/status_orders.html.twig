@@ -17,10 +17,10 @@
     <header>
         <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand col-1" href="{{ path('status_processing') }}">В обработке</a>
-                <a class="navbar-brand col-2" href="{{ path('status_expectation') }}">Ожидает в пункте выдачи</a>
-                <a class="navbar-brand col-1" href="{{ path('status_paid') }}">Оплаченно</a>
-                <a class="navbar-brand col-1" href="{{ path('status_canceled') }}">Отменено</a>
+                <a class="navbar-brand col-1" href="{{ path('status_orders', { 'status': 'processing' }) }}">В обработке</a>
+                <a class="navbar-brand col-2" href="{{ path('status_orders', { 'status': 'expectation' }) }}">Ожидает в пункте выдачи</a>
+                <a class="navbar-brand col-1" href="{{ path('status_orders', { 'status': 'paid' }) }}">Оплаченно</a>
+                <a class="navbar-brand col-1" href="{{ path('status_orders', { 'status': 'canceled' }) }}">Отменено</a>
                 <a class="navbar-brand col-1" href="{{ path('mainpage') }}">Выход</a>
             </div>
         </nav>
@@ -31,7 +31,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ path('admin') }}" style="text-decoration: none; color: black">Админ панель</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Заказы</li>
-                    <li class="breadcrumb-item active" aria-current="page">Статус: Оплачен</li>
+
                 </ol>
             </nav>
             <div class="inf">
@@ -45,7 +45,19 @@
             <h2>
                 <span>Заказ №<span class="order-number">{{ check.orderNumber }}</span> ({{ check.data}})</span>
 
-                <span style="color: #28A745; font-size: 20px">Статус: Оплачен</span>
+                {% if check.status == 'В обработке' %}
+                    <span style="color: #FFA500; font-size: 20px">Статус: В обработке</span>
+                {% endif %}
+                {% if check.status == 'Ожидает в пункте выдачи' %}
+                    <span style="color: #007BFF; font-size: 20px">Статус: Ожидае в пункте выдачи</span>
+                {% endif %}
+                {% if check.status == 'Отменен' %}
+                    <span style="color: #DC3545; font-size: 20px">Статус: Отклонён</span>
+                {% endif %}
+                {% if check.status == 'Оплачен' %}
+                    <span style="color: #28A745; font-size: 20px">Статус: Оплачен</span>
+                {% endif %}
+
 
             </h2>
             <h3>Итоговая цена: {{ check.ItogPrice }} руб.</h3>
@@ -58,6 +70,24 @@
             </a>
             <ul class="order-list">
                 {% set currentOrderNumber = check.orderNumber %}
+                <div class="order-buttons">
+                    {% if check.status == 'В обработке' %}
+                        <form method="post" action="{{ path('update_order_status', { 'orderNumber': check.orderNumber, 'status': 'expectation' }) }}">
+                            <button type="submit" class="btn btn-primary">Заказ готов к выдаче</button>
+                        </form>
+                        <form method="post" action="{{ path('update_order_status', { 'orderNumber': check.orderNumber, 'status': 'canceled' }) }}">
+                            <button type="submit" class="btn btn-danger">Отклонить</button>
+                        </form>
+                    {% elseif check.status == 'Ожидает в пункте выдачи' %}
+                        <form method="post" action="{{ path('update_order_status', { 'orderNumber': check.orderNumber, 'status': 'paid' }) }}">
+                            <button type="submit" class="btn btn-success">Оплачено</button>
+                        </form>
+                        <form method="post" action="{{ path('update_order_status', { 'orderNumber': check.orderNumber, 'status': 'canceled' }) }}">
+                            <button type="submit" class="btn btn-danger">Отклонить</button>
+                        </form>
+                    {% endif %}
+                </div>
+
                 {% endif %}
                 <li class="order-item">
                     <div>
@@ -68,10 +98,8 @@
                         <p>{{ check.count }} шт. по {{ check.FinalPrice }} руб.</p>
                     </div>
                 </li>
-
                 {% endfor %}
             </ul>
-            <a href="{{ path('mainpage') }}" class="return-link">Вернуться к покупкам</a>
         </div>
     </div>
 {% endblock %}

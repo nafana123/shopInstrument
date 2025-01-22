@@ -82,104 +82,58 @@ public function index(){
             'checks' => $checks,
         ]);
     }
+
     /**
      * @Route("/admin/update-order-status/{orderNumber}/{status}", name="update_order_status", methods={"POST"})
      */
-    public function updateOrderStatus($orderNumber, $status): Response
+    public function updateOrderStatus(Request $request, $orderNumber, $status): Response
     {
+        $statusConstant = $this->getStatusConstant($status);
+
         $checks = $this->checksRepository->findBy(['order_number' => $orderNumber]);
 
         foreach ($checks as $check) {
-            $check->setStatus($status);
+            $check->setStatus($statusConstant);
         }
 
         $this->entityManager->flush();
 
-        $userId = $checks[0]->getIdUser();
-        return $this->redirectToRoute('user_orders', ['id' => $userId]);
-    }
+        $referer = $request->headers->get('referer');
 
-    /**
-     * @Route("/admin/order-processing", name="status_processing")
-     */
-    public function statusProcessing(Request $request): Response
-    {
-        $status = $request->query->get('status');
-        $orderNumber = $request->query->get('orderNumber');
-
-        if ($status && $orderNumber) {
-            $orderNumbers = $this->checksRepository->findBy(['order_number' => $orderNumber]);
-
-            foreach ($orderNumbers as $check) {
-                $check->setStatus($status);
-            }
-
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('status_processing');
+        if ($referer) {
+            return $this->redirect($referer);
         }
 
-        $checks = $this->checksRepository->findBy(['status' => Checks::STATUS_PROCESSING]);
-        $totalOrders = count($checks);
-
-        return $this->render('admin/status_processing.html.twig', [
-            'checks' => $checks,
-            'totalOrders' => $totalOrders,
-        ]);
-    }
-    /**
-     * @Route("/admin/order-paid", name="status_paid")
-     */
-    public function statusPaid(Request $request)
-    {
-        $checks = $this->checksRepository->findBy(['status' => Checks::STATUS_SHIPPED]);
-        $totalOrders = count($checks);
-        return $this->render('admin/status_paid.html.twig', [
-            'checks' => $checks,
-            'totalOrders' => $totalOrders,
-        ]);
+        return $this->redirectToRoute('admin');
     }
 
     /**
-     * @Route("/admin/order-canceled", name="status_canceled")
+     * @Route("/admin/orders/{status}", name="status_orders")
      */
-    public function statusCanceled(Request $request)
+    public function statusOrders(string $status)
     {
-        $checks = $this->checksRepository->findBy(['status' => Checks::STATUS_CANCELLED]);
-        $totalOrders = count($checks);
-        return $this->render('admin/status_canceled.html.twig', [
+        $statusConstant = $this->getStatusConstant($status);
+        $checks = $this->checksRepository->findBy(['status' => $statusConstant]);
+
+        return $this->render('admin/status_orders.html.twig', [
             'checks' => $checks,
-            'totalOrders' => $totalOrders,
+            'status' => $statusConstant,
+            'totalOrders' => count($checks),
         ]);
     }
-    /**
-     * @Route("/admin/order-expectation", name="status_expectation")
-     */
-    public function statusExpectation(Request $request)
+
+    private function getStatusConstant(string $status): string
     {
-        $status = $request->query->get('status');
-        $orderNumber = $request->query->get('orderNumber');
+        $statusMap = [
+            'paid' => Checks::STATUS_PAID,
+            'canceled' => Checks::STATUS_CANCELLED,
+            'expectation' => Checks::STATUS_PENDING_PAYMENT,
+            'processing' => Checks::STATUS_PROCESSING,
+        ];
 
-        if ($status && $orderNumber) {
-            $orderNumbers = $this->checksRepository->findBy(['order_number' => $orderNumber]);
-
-            foreach ($orderNumbers as $check) {
-                $check->setStatus($status);
-            }
-
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('status_expectation');
-        }
-
-        $checks = $this->checksRepository->findBy(['status' => Checks::STATUS_CONFIRMED]);
-        $totalOrders = count($checks);
-
-        return $this->render('admin/status_expectation.html.twig', [
-            'checks' => $checks,
-            'totalOrders' => $totalOrders,
-        ]);
+        return $statusMap[$status] ?? Checks::STATUS_PROCESSING;
     }
+
 
     /**
      * @Route("/admin/katalog", name="katalog")

@@ -8,15 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ChecksRepository::class)]
 class Checks
 
-{   public const STATUS_NEW = '1';
-    public const STATUS_CONFIRMED = '2';
-    public const STATUS_PAID = '3';
-    public const STATUS_PROCESSING = '4';
-    public const STATUS_SHIPPED = '5';
-    public const STATUS_DELIVERED = '6';
-    public const STATUS_RETURNED = '7';
-    public const STATUS_CANCELLED = '8';
-    public const STATUS_PENDING_PAYMENT = '9';
+{
+    public const STATUS_PAID = 'Оплачен';
+    public const STATUS_PROCESSING = 'В обработке';
+    public const STATUS_CANCELLED = 'Отменен';
+    public const STATUS_PENDING_PAYMENT = 'Ожидает в пункте выдачи';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

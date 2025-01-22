@@ -77,16 +77,16 @@
             </a>
             <h2>
                 <span class="stat">Заказ №<span class="order-number">{{ check.orderNumber }}</span> ({{ check.data }})</span>
-                {% if check.status == 4 %}
+                {% if check.status == 'В обработке' %}
                     <span  class="stat" style="color: #FFA500; ">Статус: В обработке</span>
                 {% endif %}
-                {% if check.status == 2 %}
+                {% if check.status == 'Ожидает в пункте выдачи' %}
                     <span class="stat" style="color: #007BFF; ">Статус: Ожидает в пункте выдачи</span>
                 {% endif %}
-                {% if check.status == 8 %}
+                {% if check.status == 'Отменен' %}
                     <span class="stat" style="color: #DC3545;">Статус: Отклонён</span>
                 {% endif %}
-                {% if check.status == 5 %}
+                {% if check.status == 'Оплачен' %}
                     <span class="stat" style="color: #28A745;">Статус: Оплачен</span>
                 {% endif %}
             </h2>
