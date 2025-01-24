@@ -354,7 +354,7 @@
         font-size: 14px;
     }
     .aa{
-        font-size: 13px;
+        font-size: 12px;
     }
     .card__top {
         flex: 0 0 100px;
@@ -364,7 +364,7 @@
         bottom: 0;
     }
     .btn.btn-success.add-to-basket{
-        font-size: 13px;
+        font-size: 11px;
     }
 }
 @media (max-width: 375px) {
