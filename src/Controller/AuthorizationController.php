@@ -12,7 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class vhodController extends AbstractController
+class AuthorizationController extends AbstractController
 {
     private UserPasswordHasherInterface $passwordHasher;
     private UserProviderInterface $userProvider;

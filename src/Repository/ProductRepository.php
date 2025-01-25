@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Basket;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -66,6 +67,27 @@ class ProductRepository extends ServiceEntityRepository
         }
         return $qb->getQuery()->getResult();
 
+    }
+
+    public function findProductById($id)
+    {
+        return $this->find($id);
+    }
+
+    public function findSimilarProducts($typeId, $productId)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.types = :typeId')
+            ->andWhere('p.id != :productId')
+            ->setParameter('typeId', $typeId)
+            ->setParameter('productId', $productId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPopularProducts()
+    {
+        return $this->findBy([], ['amount' => 'DESC'], 4);
     }
 
 }

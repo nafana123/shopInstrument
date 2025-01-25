@@ -21,28 +21,28 @@ class ExceptionListener
 
     public function onKernelException(ExceptionEvent $event)
     {
-//        $exception = $event->getThrowable();
-//
-//        if ($exception instanceof HttpExceptionInterface) {
-//            $statusCode = $exception->getStatusCode();
-//        } else {
-//            $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-//        }
-//
-//        if ($exception instanceof \Exception) {
-//            $this->telegramService->sendError($exception);
-//        } else {
-//            $this->telegramService->sendError(new \Exception("Non-Exception type error"));
-//        }
-//
-//        $response = new Response(
-//            $this->twig->render('error.html.twig', [
-//                'exception' => $exception,
-//                'status_code' => $statusCode,
-//            ]),
-//            $statusCode
-//        );
-//
-//        $event->setResponse($response);
+        $exception = $event->getThrowable();
+
+        if ($exception instanceof HttpExceptionInterface) {
+            $statusCode = $exception->getStatusCode();
+        } else {
+            $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        if ($exception instanceof \Exception) {
+            $this->telegramService->sendError($exception);
+        } else {
+            $this->telegramService->sendError(new \Exception("Non-Exception type error"));
+        }
+
+        $response = new Response(
+            $this->twig->render('error.html.twig', [
+                'exception' => $exception,
+                'status_code' => $statusCode,
+            ]),
+            $statusCode
+        );
+
+        $event->setResponse($response);
     }
 }
